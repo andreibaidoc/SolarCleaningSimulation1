@@ -1,0 +1,40 @@
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\bin\Debug\net9.0-windows\SolarCleaningSimulation1.exe
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\bin\Debug\net9.0-windows\SolarCleaningSimulation1.deps.json
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\bin\Debug\net9.0-windows\SolarCleaningSimulation1.runtimeconfig.json
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\bin\Debug\net9.0-windows\SolarCleaningSimulation1.dll
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\bin\Debug\net9.0-windows\SolarCleaningSimulation1.pdb
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\MainWindow.g.cs
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\App.g.cs
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1_MarkupCompile.cache
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1_MarkupCompile.lref
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\MainWindow.baml
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.g.resources
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.GeneratedMSBuildEditorConfig.editorconfig
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.AssemblyInfoInputs.cache
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.AssemblyInfo.cs
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.csproj.CoreCompileInputs.cache
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.dll
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\refint\SolarCleaningSimulation1.dll
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.pdb
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.genruntimeconfig.cache
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\ref\SolarCleaningSimulation1.dll
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\bin\Debug\net9.0-windows\SolarCleaningSimulation1.exe
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\bin\Debug\net9.0-windows\SolarCleaningSimulation1.deps.json
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\bin\Debug\net9.0-windows\SolarCleaningSimulation1.runtimeconfig.json
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\bin\Debug\net9.0-windows\SolarCleaningSimulation1.dll
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\bin\Debug\net9.0-windows\SolarCleaningSimulation1.pdb
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\MainWindow.g.cs
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\App.g.cs
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1_MarkupCompile.cache
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1_MarkupCompile.lref
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\MainWindow.baml
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.g.resources
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.GeneratedMSBuildEditorConfig.editorconfig
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.AssemblyInfoInputs.cache
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.AssemblyInfo.cs
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.csproj.CoreCompileInputs.cache
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.dll
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\refint\SolarCleaningSimulation1.dll
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.pdb
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.genruntimeconfig.cache
+D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\ref\SolarCleaningSimulation1.dll
