@@ -18,11 +18,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "SolarCleaningSimulation1\\MainWindow.xaml.cs",
+              "ToolTip": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\MainWindow.xaml.cs",
+              "RelativeToolTip": "SolarCleaningSimulation1\\MainWindow.xaml.cs",
+              "ViewState": "AgIAACYAAAAAAAAAAAAgwDQAAABqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-09T20:10:04.801Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -34,19 +47,6 @@
               "RelativeToolTip": "SolarCleaningSimulation1\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2025-03-19T16:28:43.829Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\MainWindow.xaml.cs",
-              "RelativeDocumentMoniker": "SolarCleaningSimulation1\\MainWindow.xaml.cs",
-              "ToolTip": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\MainWindow.xaml.cs",
-              "RelativeToolTip": "SolarCleaningSimulation1\\MainWindow.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMwAAAA8AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-09T20:10:04.801Z",
               "EditorCaption": ""
             }
           ]
