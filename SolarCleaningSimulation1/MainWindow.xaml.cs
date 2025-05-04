@@ -40,16 +40,9 @@ namespace SolarCleaningSimulation1
         private int robot_width_mm = 1200, robot_height_mm = 1450; // Robot dimensions in milimiters
 
         public double panel_inclination = 0;
-
-        Image robot_image = new Image
-        {
-            Height = 155,
-            Width = 135,
-            Source = new BitmapImage(new Uri("pack://application:,,,/Resources/robot-picture-01.png")),
-            Stretch = System.Windows.Media.Stretch.Fill,
-            Visibility = Visibility.Collapsed
-        };
+        
         private Robot robot;
+        private Roof roof;
 
         // Generating the grid based on the width and length of the solar panels that
         // were introduced by the user.
@@ -68,7 +61,7 @@ namespace SolarCleaningSimulation1
                 double.TryParse(WidthInput.Text, out double panelWidthMm) &&
                 double.TryParse(LengthInput.Text, out double panelLengthMm))
             {
-                Roof roof = new Roof(roofWidthM, roofLengthM);
+                roof = new Roof(roofWidthM, roofLengthM);
                 
 
                 roof.CalculateLayout(canvasWidth: solar_panel_canvas.ActualWidth, canvasHeight: solar_panel_canvas.ActualHeight,
@@ -142,7 +135,8 @@ namespace SolarCleaningSimulation1
                 numRows: _numRows,
                 panelWidthPx: _panelWidthPx,
                 panelHeightPx: _panelHeightPx,
-                startPaddingPx: 10);
+                startPaddingPx: 10,
+                panelRectsPx: roof.PanelRects);
 
             robot.PlaceOnRoof(_currentScaleFactor);
             robot.BuildCoveragePath(panelPaddingPx: panelPaddingMm * _currentScaleFactor);
@@ -170,6 +164,7 @@ namespace SolarCleaningSimulation1
         private void stop_simulation_button_Click(object sender, RoutedEventArgs e)
         {
             robot.AnimationStop();
+            error_label.Content = "Animation Ended!";
         }
     }
 
