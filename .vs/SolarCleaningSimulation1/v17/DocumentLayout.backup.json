@@ -44,9 +44,22 @@
               "RelativeDocumentMoniker": "SolarCleaningSimulation1\\MainWindow.xaml.cs",
               "ToolTip": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\MainWindow.xaml.cs",
               "RelativeToolTip": "SolarCleaningSimulation1\\MainWindow.xaml.cs",
-              "ViewState": "AgIAACMAAAAAAAAAAAASwEMAAAAwAAAAAAAAAA==",
+              "ViewState": "AgIAAIAAAAAAAAAAAAAlwJwAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-09T20:10:04.801Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Roof.cs",
+              "DocumentMoniker": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\Classes\\Roof.cs",
+              "RelativeDocumentMoniker": "SolarCleaningSimulation1\\Classes\\Roof.cs",
+              "ToolTip": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\Classes\\Roof.cs",
+              "RelativeToolTip": "SolarCleaningSimulation1\\Classes\\Roof.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAYwBwAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-04T13:18:42.121Z",
               "EditorCaption": ""
             },
             {
@@ -60,19 +73,6 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-04T14:32:33.394Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Roof.cs",
-              "DocumentMoniker": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\Classes\\Roof.cs",
-              "RelativeDocumentMoniker": "SolarCleaningSimulation1\\Classes\\Roof.cs",
-              "ToolTip": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\Classes\\Roof.cs",
-              "RelativeToolTip": "SolarCleaningSimulation1\\Classes\\Roof.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAA5wC8AAAA9AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-04T13:18:42.121Z",
               "EditorCaption": ""
             },
             {

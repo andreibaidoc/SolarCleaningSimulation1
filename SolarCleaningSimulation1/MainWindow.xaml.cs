@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 using SolarCleaningSimulation1.Classes;
 
 namespace SolarCleaningSimulation1
@@ -29,13 +28,18 @@ namespace SolarCleaningSimulation1
             robot_speed_input_mm_s.Text = "100";    // Robot Speed (mm/s)
         }
 
-        private double currentScaleFactor; // Variable for converting mm to pixels - calculated in the GenerateGrid_Click() method
+        // Variables
+        private double _currentScaleFactor; // Variable for converting mm to pixels - calculated in the GenerateGrid_Click() method
         public const int CanvasPadding = 20; //value for padding the canvases for solar panels and for the roof
-        double panelWidth, panelLength; // Panel dimensions in pixels
 
-        private double _gridPaddingX, _gridPaddingY, _numRows, _numCols, _panelHeight;
+        private double _numRows, _numCols;
+        private double _gridOffsetX, _gridOffsetY; // Offsets for the grid in pixels
+        private double _panelWidthPx, _panelHeightPx; // Panel dimensions in pixels
+        public const double panelPaddingMm = 2;
 
-        private double robot_startX, robot_startY; // Robot starting position in pixels
+        private int robot_width_mm = 1200, robot_height_mm = 1450; // Robot dimensions in milimiters
+
+        public double panel_inclination = 0;
 
         Image robot_image = new Image
         {
@@ -45,6 +49,7 @@ namespace SolarCleaningSimulation1
             Stretch = System.Windows.Media.Stretch.Fill,
             Visibility = Visibility.Collapsed
         };
+        private Robot robot;
 
         // Generating the grid based on the width and length of the solar panels that
         // were introduced by the user.
@@ -64,7 +69,7 @@ namespace SolarCleaningSimulation1
                 double.TryParse(LengthInput.Text, out double panelLengthMm))
             {
                 Roof roof = new Roof(roofWidthM, roofLengthM);
-                const double panelPaddingMm = 2;
+                
 
                 roof.CalculateLayout(canvasWidth: solar_panel_canvas.ActualWidth, canvasHeight: solar_panel_canvas.ActualHeight,
                                         canvasPadding: CanvasPadding, panelWidthMm: panelWidthMm, panelLengthMm: panelLengthMm, panelPaddingMm: panelPaddingMm);
@@ -72,7 +77,7 @@ namespace SolarCleaningSimulation1
                 // Clear the canvas
                 solar_panel_canvas.Children.Clear();
 
-                // 1) Draw roof rectangle
+                // Draw roof rectangle
                 var r = roof.RoofRect;
                 var roofRect = new Rectangle
                 {
@@ -86,7 +91,7 @@ namespace SolarCleaningSimulation1
                 Canvas.SetTop(roofRect, r.Y);
                 solar_panel_canvas.Children.Add(roofRect);
 
-                // 2) Draw each panel
+                // Draw each panel
                 foreach (var pr in roof.PanelRects)
                 {
                     var panel = new Rectangle
@@ -109,7 +114,11 @@ namespace SolarCleaningSimulation1
                 // Store for the robot placement logic
                 _numCols = roof.CalculateColumns(panelWidthMm, panelPaddingMm);
                 _numRows = roof.CalculateRows(panelLengthMm, panelPaddingMm);
-                currentScaleFactor = roof.ScaleFactor;
+                _currentScaleFactor = roof.ScaleFactor;
+                _gridOffsetX = roof.RoofRect.X;
+                _gridOffsetY = roof.RoofRect.Y;
+                _panelWidthPx = panelWidthMm * _currentScaleFactor;
+                _panelHeightPx = panelLengthMm * _currentScaleFactor;
 
                 // Display the robot placement button
                 place_robot_button.Visibility = Visibility.Visible;
@@ -120,138 +129,36 @@ namespace SolarCleaningSimulation1
                                 "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
-        
-        private void add_animation_canvas()
-        {
-            if (animation_canvas.Parent != null)
-            {
-                var parent = (Panel)robot_image.Parent;
-                parent.Children.Remove(robot_image);
-            }
-            solar_panel_canvas.Children.Add(animation_canvas);
-
-            // Find the coordinates of the starting position - bottom left corner (relative to solar panel canvas)
-            robot_startX = _gridPaddingX + 10;
-            robot_startY = _gridPaddingY + 10;
-
-            animation_canvas.Width = solar_panel_canvas.Width - robot_startX * 2;
-            animation_canvas.Height = solar_panel_canvas.Height - robot_startY * 2;
-            Canvas.SetRight(animation_canvas, robot_startX);
-            Canvas.SetBottom(animation_canvas, robot_startY);
-        }
-
-        private List<Point> _coveragePath;
-        private int _currentWaypoint;
-        private void build_coverage_path_snake1()
-        {
-            _coveragePath = new List<Point>();
-
-            double pad = 2;                         // panel-to-panel padding
-            double xStep = panelWidth + pad;        // horizontal step
-            double yStep = panelLength + pad;        // vertical   step
-
-            // compute the two extreme Y centers
-            double yTop = panelLength / 2;
-            double yBottom = yTop + (_numRows - 1) * yStep;
-
-            // starting X in the rightmost column
-            double xStart = (_numCols - 1) * xStep + panelWidth / 2;
-            double xCurrent = xStart;
-
-            // 1) FULL first climb: bottom → top
-            //    (robot is already placed at (xStart, yBottom))
-            _coveragePath.Add(new Point(xCurrent, yBottom));
-
-            // we just went “up,” so next vertical should be “down”
-            bool nextGoesDown = false;
-
-            // 2) Snake leftward through the remaining columns
-            for (int stripe = 1; stripe < _numCols; stripe++)
-            {
-                // a) shift left one column at the current row
-                double yHere = nextGoesDown ? yTop : yBottom;
-                xCurrent -= xStep;
-                _coveragePath.Add(new Point(xCurrent, yHere));
-
-                // b) full vertical leg: if nextGoesDown, go to yBottom; otherwise go to yTop
-                double yThere = nextGoesDown ? yBottom : yTop;
-                _coveragePath.Add(new Point(xCurrent, yThere));
-
-                // flip direction for the next stripe
-                nextGoesDown = !nextGoesDown;
-            }
-
-            _currentWaypoint = 0;
-        }
       
         private void place_robot_button_Click(object sender, RoutedEventArgs e)
         {
+            robot = new Robot(solar_panel_canvas, animation_canvas,
+                                    widthMm: robot_width_mm, heightMm: robot_height_mm,
+                                    imageUri: "pack://application:,,,/Resources/robot-picture-01.png");
 
-            // Add and resize the animation canvas
-            add_animation_canvas();
+            robot.Configure(gridOffsetX: _gridOffsetX,
+                gridOffsetY: _gridOffsetY,
+                numCols: _numCols,
+                numRows: _numRows,
+                panelWidthPx: _panelWidthPx,
+                panelHeightPx: _panelHeightPx,
+                startPaddingPx: 10);
 
-            build_coverage_path_snake1();
+            robot.PlaceOnRoof(_currentScaleFactor);
+            robot.BuildCoveragePath(panelPaddingPx: panelPaddingMm * _currentScaleFactor);
 
-            error_label.Content = "Error Displaying Label: " + $"\n startX = {robot_startX}" + $"\n startY = {robot_startY}"
-                                    + $"\n _gridPaddingX = {_gridPaddingX}" + $"\n _gridPaddingY = {_gridPaddingY}" + $"\n _numRows = {_numRows}" + $"\n _numCols = {_numCols}"
-                                    + $"\n animation_canvas.ActualWidth = {animation_canvas.ActualWidth}" + $"\n animation_canvas.Height = {animation_canvas.Height}";
-
-            // Remove the robot_image from its current parent if it has one
-            if (robot_image.Parent != null)
-            {
-                var parent = (Panel)robot_image.Parent;
-                parent.Children.Remove(robot_image);
-            }
-            animation_canvas.Children.Add(robot_image);
-
-            // Change the robot image scale
-            robot_image.Width = robot_width_mm * currentScaleFactor;
-            robot_image.Height = robot_height_mm * currentScaleFactor;
-
-            // Place the robot at the starting position
-            Canvas.SetRight(robot_image, 0);
-            Canvas.SetBottom(robot_image, 0);
-
-            robot_image.Visibility = Visibility.Visible; // Display the robot picture
-            start_simulation_button.Visibility = Visibility.Visible; // Show the start simulation button
-            stop_simulation_button.Visibility = Visibility.Visible; // Show the stop simulation button
+            start_simulation_button.Visibility = Visibility.Visible;
+            stop_simulation_button.Visibility = Visibility.Visible;
         }
-
-        // Variables used for simulation
-        private double robotSpeedPxPerTick;
-        private DateTime simulationStartTime;
-        private DispatcherTimer simulationTimer = new DispatcherTimer();
-
-        private void stop_simulation_button_Click(object sender, RoutedEventArgs e)
-        {
-            if (simulationTimer != null && simulationTimer.IsEnabled)
-            {
-                simulationTimer.Stop();
-                MessageBox.Show("Simulation stopped by user!");
-            }
-        }
-
-        private int robot_width_mm = 1200, robot_height_mm = 1450; // Robot dimensions in milimiters
 
         private void start_simulation_button_Click(object sender, RoutedEventArgs e)
         {
             if (double.TryParse(robot_speed_input_mm_s.Text, out double robot_speed_mm_s))
             {
-                simulationStartTime = DateTime.Now;
+                robot.AnimationStart(robot_speed_mm_s, _currentScaleFactor);
 
-                // Calculate real-time movement speed (mm/s → px/tick)
-                double tickRate = 60;
-                double tickIntervalMs = 1000 / tickRate;
-                robotSpeedPxPerTick = (robot_speed_mm_s * currentScaleFactor) / tickRate;
-
-                // Init and start simulation timer
-                simulationTimer.Interval = TimeSpan.FromMilliseconds(tickIntervalMs);
-                simulationTimer.Tick += MoveRobotStep_Tick;
-                simulationTimer.Start();
-
-                // Error display
-                error_label.Content = "Error Displaying Label: " + $"\n robotSpeedPxPerTick = {robotSpeedPxPerTick}" + $"\n robot_speed_mm_s = {robot_speed_mm_s}" +
-                   $"\n solar_panel_canvas.ActualWidth = {solar_panel_canvas.ActualWidth}" + $"\n solar_panel_canvas.Height = {solar_panel_canvas.Height}";
+                // User display
+                error_label.Content = "Animation Started!";
             }
             else
             {
@@ -260,96 +167,10 @@ namespace SolarCleaningSimulation1
             }
         }
 
-        private void MoveRobotStep_Tick(object sender, EventArgs e)
+        private void stop_simulation_button_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentWaypoint >= _coveragePath.Count)
-            {
-                simulationTimer.Stop();
-                error_label.Content = "Done!";
-                return;
-            }
-
-            // 1) grab robot’s current offsets (within animation_canvas)
-            double cr = Canvas.GetRight(robot_image);
-            double cb = Canvas.GetBottom(robot_image);
-
-            // 2) compute its center in local coords
-            double cx = animation_canvas.ActualWidth - cr - robot_image.Width / 2;
-            double cy = cb + robot_image.Height / 2;
-
-            // 3) target waypoint (also in animation_canvas coords)
-            Point target = _coveragePath[_currentWaypoint];
-            Vector toT = target - new Point(cx, cy);
-            double dist = toT.Length;
-
-            if (dist < robotSpeedPxPerTick)
-            {
-                // snap onto the point
-                double newBottom = target.Y - robot_image.Height / 2;
-                double newRight = animation_canvas.ActualWidth
-                                   - (target.X + robot_image.Width / 2);
-
-                Canvas.SetBottom(robot_image, newBottom);
-                Canvas.SetRight(robot_image, newRight);
-
-                _currentWaypoint++;
-                RotateTowardsNext();
-            }
-            else
-            {
-                // move a step toward it
-                toT.Normalize();
-                double nx = cx + toT.X * robotSpeedPxPerTick;
-                double ny = cy + toT.Y * robotSpeedPxPerTick;
-
-                double newBottom = ny - robot_image.Height / 2;
-                double newRight = animation_canvas.ActualWidth
-                                   - (nx + robot_image.Width / 2);
-
-                Canvas.SetBottom(robot_image, newBottom);
-                Canvas.SetRight(robot_image, newRight);
-            }
+            robot.AnimationStop();
         }
-
-        private void RotateTowardsNext()
-        {
-            if (_currentWaypoint >= _coveragePath.Count) return;
-
-            // Robot’s current center in animation_canvas coords
-            double cr = Canvas.GetRight(robot_image);
-            double cb = Canvas.GetBottom(robot_image);
-            double cx = animation_canvas.ActualWidth - cr - robot_image.Width / 2;
-            double cy = cb + robot_image.Height / 2;
-
-            // Vector to the next waypoint
-            Point next = _coveragePath[_currentWaypoint];
-            Vector v = next - new Point(cx, cy);
-
-            double angle;
-
-            // decide whether this is primarily vertical or horizontal
-            if (Math.Abs(v.Y) > Math.Abs(v.X))
-            {
-                // vertical move
-                angle = v.Y < 0 ? 0   // up
-                               : 180; // down
-            }
-            else
-            {
-                // horizontal move
-                angle = v.X < 0 ? -90  // left
-                               : 90;  // right  (you probably never go right, but just in case)
-            }
-
-            robot_image.RenderTransform = new RotateTransform(
-                angle,
-                robot_image.Width / 2,
-                robot_image.Height / 2
-            );
-        }
-
-
-        public double panel_inclination = 0;
     }
 
 }
