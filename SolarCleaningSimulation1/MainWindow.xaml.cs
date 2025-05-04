@@ -30,7 +30,7 @@ namespace SolarCleaningSimulation1
         }
 
         private double currentScaleFactor; // Variable for converting mm to pixels - calculated in the GenerateGrid_Click() method
-        public const int CanvasPadding = 10; //value for padding the canvases for solar panels and for the roof
+        public const int CanvasPadding = 20; //value for padding the canvases for solar panels and for the roof
         double panelWidth, panelLength; // Panel dimensions in pixels
 
         private double _gridPaddingX, _gridPaddingY, _numRows, _numCols, _panelHeight;
@@ -45,8 +45,6 @@ namespace SolarCleaningSimulation1
             Stretch = System.Windows.Media.Stretch.Fill,
             Visibility = Visibility.Collapsed
         };
-
-        
 
         // Generating the grid based on the width and length of the solar panels that
         // were introduced by the user.
@@ -66,12 +64,10 @@ namespace SolarCleaningSimulation1
                 double.TryParse(LengthInput.Text, out double panelLengthMm))
             {
                 Roof roof = new Roof(roofWidthM, roofLengthM);
-                const double extraPaddingX = 50, extraPaddingY = 50;
                 const double panelPaddingMm = 2;
 
                 roof.CalculateLayout(canvasWidth: solar_panel_canvas.ActualWidth, canvasHeight: solar_panel_canvas.ActualHeight,
-                                        canvasPadding: CanvasPadding, extraPaddingX: extraPaddingX, extraPaddingY: extraPaddingY,
-                                        panelWidthMm: panelWidthMm, panelLengthMm: panelLengthMm, panelPaddingMm: panelPaddingMm);
+                                        canvasPadding: CanvasPadding, panelWidthMm: panelWidthMm, panelLengthMm: panelLengthMm, panelPaddingMm: panelPaddingMm);
 
                 // Clear the canvas
                 solar_panel_canvas.Children.Clear();
@@ -107,8 +103,8 @@ namespace SolarCleaningSimulation1
                 }
 
                 // Resize canvas to fit everything (roof + paddings)
-                solar_panel_canvas.Width = roof.RoofRect.Width + 2 * (CanvasPadding + extraPaddingX);
-                solar_panel_canvas.Height = roof.RoofRect.Height + 2 * (CanvasPadding + extraPaddingY);
+                solar_panel_canvas.Width = roof.RoofRect.Width + 2 * CanvasPadding;
+                solar_panel_canvas.Height = roof.RoofRect.Height + 2 * CanvasPadding;
 
                 // Store for the robot placement logic
                 _numCols = roof.CalculateColumns(panelWidthMm, panelPaddingMm);
