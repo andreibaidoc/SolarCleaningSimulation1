@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SolarCleaningSimulation1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3f4eb896d41042925249a0a3f821d5d965448458")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+41791fa97f65375c02e42bb1f56114941b238358")]
 [assembly: System.Reflection.AssemblyProductAttribute("SolarCleaningSimulation1")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SolarCleaningSimulation1")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

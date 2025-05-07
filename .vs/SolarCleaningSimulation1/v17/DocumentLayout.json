@@ -26,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,28 +38,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\MainWindow.xaml.cs",
-              "RelativeDocumentMoniker": "SolarCleaningSimulation1\\MainWindow.xaml.cs",
-              "ToolTip": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\MainWindow.xaml.cs",
-              "RelativeToolTip": "SolarCleaningSimulation1\\MainWindow.xaml.cs",
-              "ViewState": "AgIAAIYAAAAAAAAAAAAkwKUAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-09T20:10:04.801Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Robot.cs",
               "DocumentMoniker": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\Classes\\Robot.cs",
               "RelativeDocumentMoniker": "SolarCleaningSimulation1\\Classes\\Robot.cs",
               "ToolTip": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\Classes\\Robot.cs",
               "RelativeToolTip": "SolarCleaningSimulation1\\Classes\\Robot.cs",
-              "ViewState": "AgIAAJwAAAAAAAAAAAAvwL0AAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAAN8AAAAAAAAAAAAUwPAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-04T14:32:33.394Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "SolarCleaningSimulation1\\MainWindow.xaml.cs",
+              "ToolTip": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\MainWindow.xaml.cs",
+              "RelativeToolTip": "SolarCleaningSimulation1\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAFMAAAAAAAAAAAAgwHYAAABfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-09T20:10:04.801Z",
               "EditorCaption": ""
             },
             {

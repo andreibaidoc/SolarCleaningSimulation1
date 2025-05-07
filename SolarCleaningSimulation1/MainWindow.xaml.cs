@@ -7,9 +7,6 @@ using SolarCleaningSimulation1.Classes;
 
 namespace SolarCleaningSimulation1
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -25,7 +22,7 @@ namespace SolarCleaningSimulation1
             RoofLengthInput.Text = "8";             // Roof Length (m)
             WidthInput.Text = "1100";               // Solar Panel Width (mm)
             LengthInput.Text = "2000";              // Solar Panel Length (mm)
-            robot_speed_input_mm_s.Text = "100";    // Robot Speed (mm/s)
+            robot_speed_input_mm_s.Text = "10000";  // Robot Speed (mm/s)
         }
 
         // Variables
