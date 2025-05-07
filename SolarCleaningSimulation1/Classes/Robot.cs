@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Windows;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SolarCleaningSimulation1.Classes
 {
@@ -83,9 +84,7 @@ namespace SolarCleaningSimulation1.Classes
             _panelRects = panelRectsPx;
         }
 
-        /// <summary>
-        /// Positions the animation canvas over the panel grid and places the robot at bottom-right.
-        /// </summary>
+        // Positions the animation canvas over the panel grid and places the robot at bottom-right.
         public void PlaceOnRoof(double scaleFactor)
         {
             // Remove robot image from any parent
@@ -96,6 +95,8 @@ namespace SolarCleaningSimulation1.Classes
             if (_animCanvas.Parent is Panel p) p.Children.Remove(_animCanvas);
 
             // Compute the panel‐grid bounding box in the roof‐canvas coordinates
+            // This one basically takes the first and the last panels and memorizes their coordinates 
+            // such that animation canvas is exactly the size of the panel grid.
             double minX = _panelRects.Min(r => r.X);
             double minY = _panelRects.Min(r => r.Y);
             double maxX = _panelRects.Max(r => r.X + r.Width);
@@ -176,9 +177,6 @@ namespace SolarCleaningSimulation1.Classes
             _timer.Start();
         }
 
-        /// <summary>
-        /// Stops any movement or turning.
-        /// </summary>
         public void AnimationStop()
         {
             if (_timer.IsEnabled)
@@ -188,12 +186,19 @@ namespace SolarCleaningSimulation1.Classes
             }
         }
 
-        /// <summary>
-        /// Called each tick: handles turning‐in‐place or straight movement.
-        /// </summary>
+        public void BackToOrigin()
+        {
+            if (!_timer.IsEnabled)
+            {
+                Canvas.SetRight(_robotImage, 0);
+                Canvas.SetBottom(_robotImage, 0);
+                _robotImage.RenderTransform = new RotateTransform(0, _robotImage.Width / 2, _robotImage.Height / 2);
+            }
+        }
+
         private void MoveStep(object sender, EventArgs e)
         {
-            // 1) Turning state
+            // Turning state
             if (_isTurning)
             {
                 _turnTickElapsed++;
@@ -212,25 +217,25 @@ namespace SolarCleaningSimulation1.Classes
                 return;
             }
 
-            // 2) Completed path?
+            // Completed path
             if (_currentWaypoint >= _coveragePath.Count)
             {
                 _timer.Stop();
                 return;
             }
 
-            // 3) Compute robot center
+            // Compute robot center
             double cr = Canvas.GetRight(_robotImage);
             double cb = Canvas.GetBottom(_robotImage);
             double cx = _animCanvas.ActualWidth - cr - _robotImage.Width / 2;
             double cy = cb + _robotImage.Height / 2;
 
-            // 4) Vector to waypoint
+            // Vector to waypoint
             Point target = _coveragePath[_currentWaypoint];
             Vector vec = target - new Point(cx, cy);
             double dist = vec.Length;
 
-            // 5) Snap & initiate turn
+            // Snap & initiate turn
             if (dist < _speedPxPerTick)
             {
                 // snap
@@ -266,7 +271,7 @@ namespace SolarCleaningSimulation1.Classes
             }
             else
             {
-                // 6) Move step
+                // Move step
                 vec.Normalize();
                 double nx = cx + vec.X * _speedPxPerTick;
                 double ny = cy + vec.Y * _speedPxPerTick;

@@ -161,6 +161,7 @@ namespace SolarCleaningSimulation1
         private void stop_simulation_button_Click(object sender, RoutedEventArgs e)
         {
             robot.AnimationStop();
+            robot.BackToOrigin();
             error_label.Content = "Animation Ended!";
         }
     }
