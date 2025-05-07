@@ -37,7 +37,7 @@ namespace SolarCleaningSimulation1
         private int robot_width_mm = 1200, robot_height_mm = 1450; // Robot dimensions in milimiters
 
         public double panel_inclination = 0;
-        
+
         private Robot robot;
         private Roof roof;
 
@@ -59,7 +59,7 @@ namespace SolarCleaningSimulation1
                 double.TryParse(LengthInput.Text, out double panelLengthMm))
             {
                 roof = new Roof(roofWidthM, roofLengthM);
-                
+
 
                 roof.CalculateLayout(canvasWidth: solar_panel_canvas.ActualWidth, canvasHeight: solar_panel_canvas.ActualHeight,
                                         canvasPadding: CanvasPadding, panelWidthMm: panelWidthMm, panelLengthMm: panelLengthMm, panelPaddingMm: panelPaddingMm);
@@ -119,7 +119,7 @@ namespace SolarCleaningSimulation1
                                 "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
-      
+
         private void place_robot_button_Click(object sender, RoutedEventArgs e)
         {
             robot = new Robot(solar_panel_canvas, animation_canvas,
@@ -161,6 +161,7 @@ namespace SolarCleaningSimulation1
         private void stop_simulation_button_Click(object sender, RoutedEventArgs e)
         {
             robot.AnimationStop();
+            robot.BackToOrigin();
             error_label.Content = "Animation Ended!";
         }
     }
