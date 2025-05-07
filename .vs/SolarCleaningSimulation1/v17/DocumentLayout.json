@@ -7,12 +7,12 @@
       "RelativeMoniker": "D:0:0:{EDA1A5E8-FD13-46FD-8E9D-AAEA69A00D8B}|SolarCleaningSimulation1\\SolarCleaningSimulation1.csproj|solutionrelative:solarcleaningsimulation1\\classes\\robot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EDA1A5E8-FD13-46FD-8E9D-AAEA69A00D8B}|SolarCleaningSimulation1\\SolarCleaningSimulation1.csproj|d:\\programming workspace\\solarcleaningsimulation1\\solarcleaningsimulation1\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{EDA1A5E8-FD13-46FD-8E9D-AAEA69A00D8B}|SolarCleaningSimulation1\\SolarCleaningSimulation1.csproj|solutionrelative:solarcleaningsimulation1\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{EDA1A5E8-FD13-46FD-8E9D-AAEA69A00D8B}|SolarCleaningSimulation1\\SolarCleaningSimulation1.csproj|d:\\programming workspace\\solarcleaningsimulation1\\solarcleaningsimulation1\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EDA1A5E8-FD13-46FD-8E9D-AAEA69A00D8B}|SolarCleaningSimulation1\\SolarCleaningSimulation1.csproj|solutionrelative:solarcleaningsimulation1\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EDA1A5E8-FD13-46FD-8E9D-AAEA69A00D8B}|SolarCleaningSimulation1\\SolarCleaningSimulation1.csproj|d:\\programming workspace\\solarcleaningsimulation1\\solarcleaningsimulation1\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{EDA1A5E8-FD13-46FD-8E9D-AAEA69A00D8B}|SolarCleaningSimulation1\\SolarCleaningSimulation1.csproj|solutionrelative:solarcleaningsimulation1\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EDA1A5E8-FD13-46FD-8E9D-AAEA69A00D8B}|SolarCleaningSimulation1\\SolarCleaningSimulation1.csproj|d:\\programming workspace\\solarcleaningsimulation1\\solarcleaningsimulation1\\classes\\roof.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -44,14 +44,14 @@
               "RelativeDocumentMoniker": "SolarCleaningSimulation1\\Classes\\Robot.cs",
               "ToolTip": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\Classes\\Robot.cs",
               "RelativeToolTip": "SolarCleaningSimulation1\\Classes\\Robot.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAlwCgAAABLAAAAAAAAAA==",
+              "ViewState": "AgIAAH4AAAAAAAAAAAAqwJQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-04T14:32:33.394Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\MainWindow.xaml",
               "RelativeDocumentMoniker": "SolarCleaningSimulation1\\MainWindow.xaml",
@@ -63,13 +63,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "SolarCleaningSimulation1\\MainWindow.xaml.cs",
               "ToolTip": "D:\\Programming Workspace\\SolarCleaningSimulation1\\SolarCleaningSimulation1\\MainWindow.xaml.cs",
               "RelativeToolTip": "SolarCleaningSimulation1\\MainWindow.xaml.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAQwKAAAAAvAAAAAAAAAA==",
+              "ViewState": "AgIAABoAAAAAAAAAAAAYwIoAAABvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-09T20:10:04.801Z",
               "EditorCaption": ""

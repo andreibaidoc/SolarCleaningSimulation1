@@ -136,7 +136,7 @@ namespace SolarCleaningSimulation1
                 panelRectsPx: roof.PanelRects);
 
             robot.PlaceOnRoof(_currentScaleFactor);
-            robot.BuildCoveragePath(panelPaddingPx: panelPaddingMm * _currentScaleFactor);
+            robot.BuildCoveragePath(panelPaddingPx: panelPaddingMm * _currentScaleFactor, robotWidthPx: robot_width_mm * _currentScaleFactor);
 
             start_simulation_button.Visibility = Visibility.Visible;
             stop_simulation_button.Visibility = Visibility.Visible;
