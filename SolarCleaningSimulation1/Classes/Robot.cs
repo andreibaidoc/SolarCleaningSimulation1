@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Windows;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Windows.Media.Animation;
 
 namespace SolarCleaningSimulation1.Classes
 {
@@ -34,18 +29,25 @@ namespace SolarCleaningSimulation1.Classes
         private List<Rect> _panelRects;
 
         // Animation state
-        private readonly DispatcherTimer _timer;
+        private DateTime _lastRenderTime;
+        private double _speedPxPerSec;
+
+        // Coverage path and waypoints
         private List<Point> _coveragePath = new List<Point>();
         private int _currentWaypoint;
-        private double _speedPxPerTick;
 
         // Turning‐in‐place state
         private bool _isTurning = false;
-        private double _turnTickElapsed = 0;
-        private double _turnTicks = 0;
+        private double _turnElapsedSec = 0;
+        private double _turnDurationSec = 0;
         private double _initialAngle = 0;
         private double _targetAngle = 0;
         private double _currentAngle = 0;
+
+        private DateTime _simStartTime;
+        
+        private TimeSpan _elapsedTime;
+        public TimeSpan ElapsedTime => _elapsedTime;
 
         public Robot(Canvas solarPanelCanvas, Canvas animationCanvas,
                      int widthMm, int heightMm, string imageUri)
@@ -62,10 +64,6 @@ namespace SolarCleaningSimulation1.Classes
                 Stretch = Stretch.Fill,
                 Visibility = Visibility.Collapsed
             };
-
-            // Timer
-            _timer = new DispatcherTimer();
-            _timer.Tick += MoveStep;
         }
 
         // Configures layout parameters before placing robot: grid offsets, panel sizes, grid counts, padding.
@@ -172,37 +170,65 @@ namespace SolarCleaningSimulation1.Classes
         // Begins animation at the given speed.
         public void AnimationStart(double speedMmPerSec, double scaleFactor, int tickRate = 60)
         {
-            _speedPxPerTick = (speedMmPerSec * scaleFactor) / tickRate;
-            _timer.Interval = TimeSpan.FromMilliseconds(1000.0 / tickRate);
-            _timer.Start();
+            _speedPxPerSec = speedMmPerSec * scaleFactor;
+            _lastRenderTime = DateTime.Now;
+            _simStartTime = DateTime.Now;
+
+            // Unsubscribe first, then subscribe exactly once
+            CompositionTarget.Rendering -= OnRendering;
+            CompositionTarget.Rendering += OnRendering;
         }
 
         public void AnimationStop()
         {
-            if (_timer.IsEnabled)
-            {
-                _timer.Stop();
-                _isTurning = false;
-            }
+            CompositionTarget.Rendering -= OnRendering;
+            _isTurning = false;
+            BackToOrigin();
+            _elapsedTime = DateTime.Now - _simStartTime;
         }
 
-        public void BackToOrigin()
+        private void BackToOrigin()
         {
-            if (!_timer.IsEnabled)
-            {
-                Canvas.SetRight(_robotImage, 0);
-                Canvas.SetBottom(_robotImage, 0);
-                _robotImage.RenderTransform = new RotateTransform(0, _robotImage.Width / 2, _robotImage.Height / 2);
-            }
+            // Stop receiving per-frame updates
+            CompositionTarget.Rendering -= OnRendering;
+
+            // Cancel any in-place turn
+            _isTurning = false;
+
+            // Reset path position
+            _currentWaypoint = 0;
+
+            // Reset orientation
+            _currentAngle = 0;
+            _robotImage.RenderTransform = new RotateTransform(
+                0,
+                _robotImage.Width / 2,
+                _robotImage.Height / 2
+            );
+
+            // Snap back to top-left of animation canvas
+            Canvas.SetRight(_robotImage, 0);
+            Canvas.SetBottom(_robotImage, 0);
         }
 
-        private void MoveStep(object sender, EventArgs e)
+        private void OnRendering(object sender, EventArgs e)
         {
-            // Turning state
+            // Calculate seconds since last frame
+            var now = DateTime.Now;
+            double dt = (now - _lastRenderTime).TotalSeconds;
+            _lastRenderTime = now;
+
+            // Call your modified MoveStep that takes dt
+            MoveStep(dt);
+        }
+
+        private void MoveStep(double dt)
+        {
+            // Turning‐in‐place
             if (_isTurning)
             {
-                _turnTickElapsed++;
-                double t = Math.Min(1.0, _turnTickElapsed / _turnTicks);
+                _turnElapsedSec += dt;
+                double t = Math.Min(1.0, _turnElapsedSec / _turnDurationSec);
                 double ang = _initialAngle + (_targetAngle - _initialAngle) * t;
                 _robotImage.RenderTransform = new RotateTransform(
                     ang,
@@ -220,50 +246,47 @@ namespace SolarCleaningSimulation1.Classes
             // Completed path
             if (_currentWaypoint >= _coveragePath.Count)
             {
-                _timer.Stop();
+                AnimationStop();
                 return;
             }
 
-            // Compute robot center
+            // Compute center (use Left/Top now)
             double cr = Canvas.GetRight(_robotImage);
             double cb = Canvas.GetBottom(_robotImage);
             double cx = _animCanvas.ActualWidth - cr - _robotImage.Width / 2;
             double cy = cb + _robotImage.Height / 2;
 
-            // Vector to waypoint
+            // Vector - target
             Point target = _coveragePath[_currentWaypoint];
             Vector vec = target - new Point(cx, cy);
             double dist = vec.Length;
+            vec.Normalize();
 
-            // Snap & initiate turn
-            if (dist < _speedPxPerTick)
+            // Arrived? then snap + initiate turn
+            if (dist < _speedPxPerSec * dt)
             {
-                // snap
-                double nb = target.Y - _robotImage.Height / 2;
-                double nr = _animCanvas.ActualWidth
-                          - (target.X + _robotImage.Width / 2);
-                Canvas.SetBottom(_robotImage, nb);
-                Canvas.SetRight(_robotImage, nr);
+                // snap to exact center‐line
+                double newRight = _animCanvas.ActualWidth - (target.X + _robotImage.Width / 2);
+                double newBottom = target.Y - _robotImage.Height / 2;
+                Canvas.SetRight(_robotImage, newRight);
+                Canvas.SetBottom(_robotImage, newBottom);
 
-                // compute next heading
+                // compute next heading and turnDurationSec:
                 if (_currentWaypoint + 1 < _coveragePath.Count)
                 {
-                    Point nxt = _coveragePath[_currentWaypoint + 1];
-                    Vector v2 = nxt - target;
-                    double ar = Math.Atan2(v2.Y, v2.X);
-                    double raw = -ar * 180 / Math.PI + 90;
-                    double delta = ((raw - _currentAngle + 540) % 360) - 180;
+                    var next = _coveragePath[_currentWaypoint + 1];
+                    var v2 = next - target;
+                    double rawRad = Math.Atan2(v2.Y, v2.X);
+                    double rawDeg = -rawRad * 180 / Math.PI + 90;
+                    double delta = ((rawDeg - _currentAngle + 540) % 360) - 180;
                     _targetAngle = _currentAngle + delta;
                 }
-                else
-                {
-                    _targetAngle = _currentAngle;
-                }
+                else _targetAngle = _currentAngle;
 
-                // compute ticks for 90° turn
+                // turnDuration = arcLength / speed = (π/2 * r) / (px/sec)
                 double radiusPx = _panelWidthPx * 0.3;
-                _turnTicks = (Math.PI / 2 * radiusPx) / _speedPxPerTick;
-                _turnTickElapsed = 0;
+                _turnDurationSec = (Math.PI / 2 * radiusPx) / _speedPxPerSec;
+                _turnElapsedSec = 0;
                 _initialAngle = _currentAngle;
                 _isTurning = true;
 
@@ -271,15 +294,15 @@ namespace SolarCleaningSimulation1.Classes
             }
             else
             {
-                // Move step
-                vec.Normalize();
-                double nx = cx + vec.X * _speedPxPerTick;
-                double ny = cy + vec.Y * _speedPxPerTick;
-                double nb = ny - _robotImage.Height / 2;
-                double nr = _animCanvas.ActualWidth
-                          - (nx + _robotImage.Width / 2);
-                Canvas.SetBottom(_robotImage, nb);
-                Canvas.SetRight(_robotImage, nr);
+                // Move by (speed * dt)
+                double move = _speedPxPerSec * dt;
+                double nx = cx + vec.X * move;
+                double ny = cy + vec.Y * move;
+
+                double newRight = _animCanvas.ActualWidth - (nx + _robotImage.Width / 2);
+                double newBottom = ny - _robotImage.Height / 2;
+                Canvas.SetRight(_robotImage, newRight);
+                Canvas.SetBottom(_robotImage, newBottom);
             }
         }
     }

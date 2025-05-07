@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SolarCleaningSimulation1.Classes;
 
@@ -161,8 +160,8 @@ namespace SolarCleaningSimulation1
         private void stop_simulation_button_Click(object sender, RoutedEventArgs e)
         {
             robot.AnimationStop();
-            robot.BackToOrigin();
-            error_label.Content = "Animation Ended!";
+            var elapsed = robot.ElapsedTime;
+            error_label.Content = $"Animation Ended!\n Elapsed: " + elapsed.ToString(@"mm\:ss");
         }
     }
 
