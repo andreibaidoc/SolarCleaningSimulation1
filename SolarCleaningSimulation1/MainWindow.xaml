@@ -49,8 +49,8 @@
         </StackPanel>
 
         <!-- Helper images for user input -->
-        <Image Grid.Column="1" HorizontalAlignment="Left" Height="160" Margin="129,113,0,0" VerticalAlignment="Top" Width="160" Source="/length_width_roof_input.png"/>
-        <Image Grid.Column="1" HorizontalAlignment="Left" Height="164" Margin="125,263,0,0" VerticalAlignment="Top" Width="164" Source="/length_width_panel_input.png"/>
+        <Image Grid.Column="1" HorizontalAlignment="Left" Height="160" Margin="129,113,0,0" VerticalAlignment="Top" Width="160" Source="/Resources/length_width_roof_input.png"/>
+        <Image Grid.Column="1" HorizontalAlignment="Left" Height="164" Margin="125,263,0,0" VerticalAlignment="Top" Width="164" Source="/Resources/length_width_panel_input.png"/>
 
         <!-- Stack panel with buttons for program control -->
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,470,0,0" Grid.Column="1" Height="111" Width="120">
