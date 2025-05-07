@@ -9,15 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="length_width_panel_input.png" />
-    <None Remove="length_width_roof_input.png" />
     <None Remove="Resources\program_icon.ico" />
     <None Remove="Resources\robot-picture-01.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="length_width_panel_input.png" />
-    <Resource Include="length_width_roof_input.png" />
     <Resource Include="Resources\program_icon.ico" />
     <Resource Include="Resources\robot-picture-01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
