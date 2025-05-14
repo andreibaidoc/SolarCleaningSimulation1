@@ -21,7 +21,7 @@ namespace SolarCleaningSimulation1
             RoofLengthInput.Text = "8";             // Roof Length (m)
             WidthInput.Text = "1100";               // Solar Panel Width (mm)
             LengthInput.Text = "2000";              // Solar Panel Length (mm)
-            robot_speed_input_mm_s.Text = "10000";  // Robot Speed (mm/s)
+            robot_speed_input_mm_s.Text = "5000";  // Robot Speed (mm/s)
         }
 
         // Variables
@@ -125,6 +125,18 @@ namespace SolarCleaningSimulation1
                                     widthMm: robot_width_mm, heightMm: robot_height_mm,
                                     imageUri: "pack://application:,,,/Resources/robot-picture-01.png");
 
+            // Subscribe to animation start/stop event
+            // When the robot stops, this handler will be invoked with the elapsed TimeSpan
+            robot.AnimationStopped += (s, elapsed) =>
+            {
+                // Dispatcher.Invoke ensures the UI update runs on the main (UI) thread,
+                // since CompositionTarget.Rendering may fire on a background thread
+                Dispatcher.Invoke(() =>
+                {
+                    error_label.Content = $"Animation Ended!\n Elapsed: {elapsed:mm\\:ss}";
+                });
+            };
+
             robot.Configure(gridOffsetX: _gridOffsetX,
                 gridOffsetY: _gridOffsetY,
                 numCols: _numCols,
@@ -135,7 +147,7 @@ namespace SolarCleaningSimulation1
                 panelRectsPx: roof.PanelRects);
 
             robot.PlaceOnRoof(_currentScaleFactor);
-            robot.BuildCoveragePath(panelPaddingPx: panelPaddingMm * _currentScaleFactor, robotWidthPx: robot_width_mm * _currentScaleFactor);
+            robot.BuildCoveragePathOptimised(panelPaddingPx: panelPaddingMm * _currentScaleFactor, robotWidthPx: robot_width_mm * _currentScaleFactor);
 
             start_simulation_button.Visibility = Visibility.Visible;
             stop_simulation_button.Visibility = Visibility.Visible;

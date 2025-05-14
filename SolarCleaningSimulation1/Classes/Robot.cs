@@ -49,6 +49,8 @@ namespace SolarCleaningSimulation1.Classes
         private TimeSpan _elapsedTime;
         public TimeSpan ElapsedTime => _elapsedTime;
 
+        public event EventHandler<TimeSpan> AnimationStopped;
+
         public Robot(Canvas solarPanelCanvas, Canvas animationCanvas,
                      int widthMm, int heightMm, string imageUri)
         {
@@ -167,6 +169,58 @@ namespace SolarCleaningSimulation1.Classes
             _currentWaypoint = 0;
         }
 
+        // Builds the up-left-down-right path, inset by half the robot’s width so panels get fully covered.
+        public void BuildCoveragePathOptimised(double panelPaddingPx, double robotWidthPx)
+        {
+            _coveragePath.Clear();
+
+            // 1) compute your grid steps
+            double xStep = _panelWidthPx + panelPaddingPx;
+            double yStep = _panelHeightPx + panelPaddingPx;
+
+            // 2) compute the vertical inset so the robot “brush-width” reaches edges
+            double totalHeight = _numRows * _panelHeightPx
+                               + (_numRows - 1) * panelPaddingPx;
+            double halfBrush = robotWidthPx / 2;
+            double yTop = halfBrush;
+            double yBottom = totalHeight - halfBrush;
+
+            // 3) compute the X-centers of the leftmost & rightmost columns
+            double xRight = (_numCols - 1) * xStep + _panelWidthPx / 2;
+            double xLeft =             /* first column’s center */
+                            _panelWidthPx / 2;
+
+            // 4)  START at bottom-right
+            _coveragePath.Add(new Point(xRight, yBottom));
+
+            // 5)  CLIMB to top-right
+            _coveragePath.Add(new Point(xRight, yTop));
+
+            // 6)  SNAKE left↔right across each row
+            bool goingLeft = true;
+            for (int row = 0; row < _numRows; row++)
+            {
+                // a) move horizontally to the opposite side
+                double y = yTop + row * yStep;
+                double xTarget = goingLeft ? xLeft : xRight;
+                _coveragePath.Add(new Point(xTarget, y));
+
+                // b) drop down one row (if not on the last row)
+                if (row < _numRows - 1)
+                {
+                    double nextY = y + yStep;
+                    _coveragePath.Add(new Point(xTarget, nextY));
+                }
+
+                // flip direction for the next row
+                goingLeft = !goingLeft;
+            }
+
+            // 7) Reset for the next run
+            _currentWaypoint = 0;
+        }
+
+
         // Begins animation at the given speed.
         public void AnimationStart(double speedMmPerSec, double scaleFactor, int tickRate = 60)
         {
@@ -185,6 +239,9 @@ namespace SolarCleaningSimulation1.Classes
             _isTurning = false;
             BackToOrigin();
             _elapsedTime = DateTime.Now - _simStartTime;
+
+            // Fire the event, showing the animation has stopped
+            AnimationStopped?.Invoke(this, _elapsedTime);
         }
 
         private void BackToOrigin()
