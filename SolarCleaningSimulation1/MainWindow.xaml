@@ -67,8 +67,8 @@
        FontFamily="Arial" FontWeight="Bold" Width="134" Grid.Column="1" Visibility="Hidden"/>
 
         <!-- Error displaying label with a border so that it looks nice -->
-        <Border x:Name="results_label_border" Margin="16,612,16,30" Background="#FFF6F6F6" CornerRadius="10" BorderThickness="1" BorderBrush="Black" Grid.Column="1" Visibility="Collapsed">
-            <Label x:Name="error_label" Content="Results: " FontFamily="Trebuchet MS" FontSize="16" Padding="5" Width="260" Margin="3,3,3,3" Visibility="Collapsed"/>
+        <Border Margin="16,612,16,30" Background="#FFF6F6F6" CornerRadius="10" BorderThickness="1" BorderBrush="Black" Grid.Column="1">
+            <Label x:Name="error_label" Content="Results: " FontFamily="Trebuchet MS" FontSize="16" Padding="5" Width="260" Margin="3,3,3,3"/>
         </Border>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,382,0,0" Grid.Column="1" Width="132" Height="88">
             <TextBlock Text="Animation Parameters:" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Arial" FontWeight="Bold" FontSize="11"/>

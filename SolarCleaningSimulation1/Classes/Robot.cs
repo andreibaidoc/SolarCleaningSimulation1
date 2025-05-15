@@ -1,7 +1,9 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
+using System.Windows.Threading;
 using System.Windows;
+using System.Windows.Media.Animation;
 
 namespace SolarCleaningSimulation1.Classes
 {
@@ -67,7 +69,10 @@ namespace SolarCleaningSimulation1.Classes
         }
 
         // Configures layout parameters before placing robot: grid offsets, panel sizes, grid counts, padding.
-        public void Configure(double gridOffsetX, double gridOffsetY, double numCols, double numRows, double panelWidthPx, double panelHeightPx, double startPaddingPx, List<Rect> panelRectsPx)
+        public void Configure(double gridOffsetX, double gridOffsetY,
+                              double numCols, double numRows,
+                              double panelWidthPx, double panelHeightPx,
+                              double startPaddingPx, List<Rect> panelRectsPx)
         {
             _gridOffsetX = gridOffsetX;
             _gridOffsetY = gridOffsetY;
