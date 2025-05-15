@@ -39,3 +39,5 @@ D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleani
 D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.genruntimeconfig.cache
 D:\Programming Workspace\SolarCleaningSimulation1 - backup 5.03.2025\SolarCleaningSimulation1\obj\Debug\net9.0-windows\ref\SolarCleaningSimulation1.dll
 D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\SolarCleaningSimulation1.sourcelink.json
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\StartAppWindow.g.cs
+D:\Programming Workspace\SolarCleaningSimulation1\SolarCleaningSimulation1\obj\Debug\net9.0-windows\StartAppWindow.baml
