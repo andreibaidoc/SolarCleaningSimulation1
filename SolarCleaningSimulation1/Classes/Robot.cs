@@ -126,97 +126,13 @@ namespace SolarCleaningSimulation1.Classes
             _robotImage.Visibility = Visibility.Visible;
         }
 
-        // Builds the back‐and‐forth path, inset by half the robot’s width so panels get fully covered.
-        public void BuildCoveragePath(double panelPaddingPx, double robotWidthPx)
+        /// <summary>
+        /// Sets a new coverage path for the robot and resets its progress to the start.
+        /// </summary>
+        /// <param name="coveragePath">List of Points (canvas coords) the robot will follow.</param>
+        public void SetCoveragePath(List<Point> coveragePath)
         {
-            _coveragePath.Clear();
-
-            double xStep = _panelWidthPx + panelPaddingPx;
-            double yStep = _panelHeightPx + panelPaddingPx;
-
-            // total grid height (edge-to-edge)
-            double totalHeight = _numRows * _panelHeightPx
-                               + (_numRows - 1) * panelPaddingPx;
-
-            // inset by half the robot’s width so it brushes to the panel edges
-            double halfBrush = robotWidthPx / 2;
-            double yTop = halfBrush;
-            double yBottom = totalHeight - halfBrush;
-
-            // start at the rightmost column
-            double xStart = (_numCols - 1) * xStep + _panelWidthPx / 2;
-            double xCurrent = xStart;
-
-            // first drop-in at bottom edge
-            _coveragePath.Add(new Point(xCurrent, yBottom));
-            bool nextGoesDown = false;
-
-            // snake leftward
-            for (int col = 1; col < _numCols; col++)
-            {
-                // move up or down to the opposite edge‐inset
-                double yHere = nextGoesDown ? yTop : yBottom;
-                xCurrent -= xStep;
-                _coveragePath.Add(new Point(xCurrent, yHere));
-
-                // then sweep back to the other edge‐inset
-                double yThere = nextGoesDown ? yBottom : yTop;
-                _coveragePath.Add(new Point(xCurrent, yThere));
-
-                nextGoesDown = !nextGoesDown;
-            }
-
-            _currentWaypoint = 0;
-        }
-
-        // Builds the up-left-down-right path, inset by half the robot’s width so panels get fully covered.
-        public void BuildCoveragePathOptimised(double panelPaddingPx, double robotWidthPx)
-        {
-            _coveragePath.Clear();
-
-            // 1) compute your grid steps
-            double xStep = _panelWidthPx + panelPaddingPx;
-            double yStep = _panelHeightPx + panelPaddingPx;
-
-            // 2) compute the vertical inset so the robot “brush-width” reaches edges
-            double totalHeight = _numRows * _panelHeightPx
-                               + (_numRows - 1) * panelPaddingPx;
-            double halfBrush = robotWidthPx / 2;
-            double yTop = halfBrush;
-            double yBottom = totalHeight - halfBrush;
-
-            // 3) compute the X-centers of the leftmost & rightmost columns
-            double xRight = (_numCols - 1) * xStep + _panelWidthPx / 2;
-            double xLeft =             /* first column’s center */
-                            _panelWidthPx / 2;
-
-            // 4)  START at bottom-right
-            _coveragePath.Add(new Point(xRight, yBottom));
-
-            // 5)  CLIMB to top-right
-            _coveragePath.Add(new Point(xRight, yTop));
-
-            // 6)  SNAKE left↔right across each row
-            bool goingLeft = true;
-            for (int row = 0; row < _numRows; row++)
-            {
-                // a) move horizontally to the opposite side
-                double y = yTop + row * yStep;
-                double xTarget = goingLeft ? xLeft : xRight;
-                _coveragePath.Add(new Point(xTarget, y));
-
-                // b) drop down one row (if not on the last row)
-                if (row < _numRows - 1)
-                {
-                    double nextY = y + yStep;
-                    _coveragePath.Add(new Point(xTarget, nextY));
-                }
-
-                // flip direction for the next row
-                goingLeft = !goingLeft;
-            }
-
-            // 7) Reset for the next run
+            _coveragePath = coveragePath ?? throw new ArgumentNullException(nameof(coveragePath));
             _currentWaypoint = 0;
         }
 

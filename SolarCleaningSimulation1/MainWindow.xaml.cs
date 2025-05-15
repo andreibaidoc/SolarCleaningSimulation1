@@ -12,6 +12,10 @@ namespace SolarCleaningSimulation1
         {
             InitializeComponent();
             SetDefaultValues();  // Automatically set default values and generate the grid
+
+            // fill with the enum values and pick a default
+            CoveragePathComboBox.ItemsSource = Enum.GetValues(typeof(RobotPath.CoveragePathType));
+            CoveragePathComboBox.SelectedItem = RobotPath.CoveragePathType.ZigZag;
         }
 
         private void SetDefaultValues()
@@ -39,6 +43,28 @@ namespace SolarCleaningSimulation1
 
         private Robot robot;
         private Roof roof;
+
+        private void CoveragePathComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (robot == null) return;
+            RegenerateCoveragePath();
+        }
+
+        // shared logic to build & hand off the path
+        private void RegenerateCoveragePath()
+        {
+            var selected = (RobotPath.CoveragePathType)CoveragePathComboBox.SelectedItem;
+            var waypoints = RobotPath.GenerateCoveragePath(
+                selected,
+                panelPaddingPx: panelPaddingMm * _currentScaleFactor,
+                robotBrushPx: robot_width_mm * _currentScaleFactor,
+                numCols: (int)_numCols,
+                numRows: (int)_numRows,
+                panelWidthPx: _panelWidthPx,
+                panelHeightPx: _panelHeightPx
+            );
+            robot.SetCoveragePath(waypoints);
+        }
 
         // Generating the grid based on the width and length of the solar panels that
         // were introduced by the user.
@@ -147,10 +173,20 @@ namespace SolarCleaningSimulation1
                 panelRectsPx: roof.PanelRects);
 
             robot.PlaceOnRoof(_currentScaleFactor);
-            robot.BuildCoveragePathOptimised(panelPaddingPx: panelPaddingMm * _currentScaleFactor, robotWidthPx: robot_width_mm * _currentScaleFactor);
 
+            // Choose the path type
+            CoveragePathComboBox.Visibility = Visibility.Visible;
+            dropbox_path_label.Visibility = Visibility.Visible;
+
+            // get their selection
+            var selectedPattern = (RobotPath.CoveragePathType)CoveragePathComboBox.SelectedItem;
+
+            RegenerateCoveragePath();
+
+            // now safely show & enable Start/Stop
             start_simulation_button.Visibility = Visibility.Visible;
             stop_simulation_button.Visibility = Visibility.Visible;
+
         }
 
         private void start_simulation_button_Click(object sender, RoutedEventArgs e)
