@@ -25,7 +25,8 @@ namespace SolarCleaningSimulation1
             RoofLengthInput.Text = "8";             // Roof Length (m)
             WidthInput.Text = "1100";               // Solar Panel Width (mm)
             LengthInput.Text = "2000";              // Solar Panel Length (mm)
-            robot_speed_input_mm_s.Text = "5000";  // Robot Speed (mm/s)
+            robot_speed_input_mm_s.Text = "1000";   // Default Robot Speed (mm/s) => 1 m/s
+            speed_multiplier_input.Text = "5";      // Default 5x speed for animation
         }
 
         // Variables
@@ -39,7 +40,8 @@ namespace SolarCleaningSimulation1
 
         private int robot_width_mm = 1200, robot_height_mm = 1450; // Robot dimensions in milimiters
 
-        public double panel_inclination = 0;
+        public double panel_inclination = 0; 
+        private double _speedMultiplier;
 
         private Robot robot;
         private Roof roof;
@@ -159,7 +161,7 @@ namespace SolarCleaningSimulation1
                 // since CompositionTarget.Rendering may fire on a background thread
                 Dispatcher.Invoke(() =>
                 {
-                    error_label.Content = $"Animation Ended!\n Elapsed: {elapsed:mm\\:ss}";
+                    error_label.Content = $"Animation Ended!\n Elapsed: {elapsed * _speedMultiplier:mm\\:ss}";
                 });
             };
 
@@ -191,16 +193,17 @@ namespace SolarCleaningSimulation1
 
         private void start_simulation_button_Click(object sender, RoutedEventArgs e)
         {
-            if (double.TryParse(robot_speed_input_mm_s.Text, out double robot_speed_mm_s))
+            if (double.TryParse(robot_speed_input_mm_s.Text, out double robot_speed_mm_s) && double.TryParse(speed_multiplier_input.Text, out double speed_multiplier))
             {
-                robot.AnimationStart(robot_speed_mm_s, _currentScaleFactor);
+                _speedMultiplier = speed_multiplier;
+                robot.AnimationStart(robot_speed_mm_s * speed_multiplier, _currentScaleFactor);
 
                 // User display
                 error_label.Content = "Animation Started!";
             }
             else
             {
-                MessageBox.Show("Please enter a valid numeric value for robot speed in mm/s.",
+                MessageBox.Show("Please enter a valid numeric value for robot speed in mm/s and/or speed multiplier.",
                                 "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
@@ -208,7 +211,7 @@ namespace SolarCleaningSimulation1
         private void stop_simulation_button_Click(object sender, RoutedEventArgs e)
         {
             robot.AnimationStop();
-            var elapsed = robot.ElapsedTime;
+            var elapsed = robot.ElapsedTime * _speedMultiplier;
             error_label.Content = $"Animation Ended!\n Elapsed: " + elapsed.ToString(@"mm\:ss");
         }
     }

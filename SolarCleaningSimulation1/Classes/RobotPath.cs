@@ -28,8 +28,7 @@ namespace SolarCleaningSimulation1.Classes
             };
         }
 
-        private static List<Point> GenerateZigZagPath(double panelPaddingPx, double robotBrushPx, int numCols, 
-                                                        int numRows, double panelWidthPx, double panelHeightPx)
+        private static List<Point> GenerateZigZagPath(double panelPaddingPx, double robotBrushPx, int numCols, int numRows, double panelWidthPx, double panelHeightPx)
         {
             var coveragePath = new List<Point>();
             double xStep = panelWidthPx + panelPaddingPx;
@@ -67,42 +66,52 @@ namespace SolarCleaningSimulation1.Classes
             return coveragePath;
         }
 
-        private static List<Point> GenerateRowWisePath(
-            double panelPaddingPx,
-            double robotBrushPx,
-            int numCols,
-            int numRows,
-            double panelWidthPx,
-            double panelHeightPx)
+        private static List<Point> GenerateRowWisePath(double panelPaddingPx, double robotBrushPx, int numCols, int numRows, double panelWidthPx, double panelHeightPx)
         {
             var coveragePath = new List<Point>();
+
+            // 1) compute grid steps
             double xStep = panelWidthPx + panelPaddingPx;
             double yStep = panelHeightPx + panelPaddingPx;
             double halfBrush = robotBrushPx / 2;
 
-            double xRight = (numCols - 1) * xStep + panelWidthPx / 2;
-            double xLeft = panelWidthPx / 2;
-            double yBottom = numRows * panelHeightPx
-                           + (numRows - 1) * panelPaddingPx
-                           - halfBrush;
+            // 2) inset extremes
+            double totalWidth = numCols * panelWidthPx
+                               + (numCols - 1) * panelPaddingPx;
+            double totalHeight = numRows * panelHeightPx
+                               + (numRows - 1) * panelPaddingPx;
 
-            // loop start at bottom-right
-            var start = new Point(xRight, yBottom);
-            coveragePath.Add(start);
-            // climb up
-            coveragePath.Add(new Point(xRight, halfBrush));
-            // left
-            coveragePath.Add(new Point(xLeft, halfBrush));
-            // down small (one brush-width)
-            coveragePath.Add(new Point(xLeft, halfBrush + robotBrushPx));
-            // right
-            coveragePath.Add(new Point(xRight, halfBrush + robotBrushPx));
-            // back down
-            coveragePath.Add(start);
-            // left to finish loop
-            coveragePath.Add(new Point(xLeft, yBottom));
-            // return to start
-            coveragePath.Add(start);
+            // **inverted**: yTop is at the very top of the first stripe
+            double yTop = totalHeight - halfBrush;
+            double yBottom = halfBrush;
+            double xLeft = halfBrush;
+            double xRight = totalWidth - halfBrush;
+
+            // 3) build stripe Y positions **from top down** by exactly brush‐width
+            var stripeYs = new List<double>();
+            for (double y = yTop; y > yBottom; y -= robotBrushPx)
+                stripeYs.Add(y);
+            stripeYs.Add(yBottom);
+
+            // 4) start at top-right
+            coveragePath.Add(new Point(xRight, stripeYs[0]));
+
+            bool goingLeft = true;
+            // 5) for each stripe: horizontal sweep then drop down one brush-width
+            for (int i = 0; i < stripeYs.Count; i++)
+            {
+                double y = stripeYs[i];
+                double xTarget = goingLeft ? xLeft : xRight;
+
+                // horizontal move
+                coveragePath.Add(new Point(xTarget, y));
+
+                // vertical drop to next stripe (if any)
+                if (i < stripeYs.Count - 1)
+                    coveragePath.Add(new Point(xTarget, stripeYs[i + 1]));
+
+                goingLeft = !goingLeft;
+            }
 
             return coveragePath;
         }

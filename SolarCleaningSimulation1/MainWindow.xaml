@@ -53,26 +53,29 @@
         <Image Grid.Column="1" HorizontalAlignment="Left" Height="164" Margin="125,263,0,0" VerticalAlignment="Top" Width="164" Source="/Resources/length_width_panel_input.png"/>
 
         <!-- Stack panel with buttons for program control -->
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,452,0,0" Grid.Column="1" Height="111" Width="120">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,484,0,0" Grid.Column="1" Height="111" Width="120">
             <Button x:Name="generate_grid_button" Content="Generate Grid" Click="GenerateGrid_Click" />
             <Button x:Name="place_robot_button" Content="Place Robot" Click="place_robot_button_Click" Visibility="Hidden" Margin="0,5,0,0"/>
             <Button x:Name="start_simulation_button" Content="Start Simulation" Click="start_simulation_button_Click" Visibility="Hidden" Margin="0,5,0,0"/>
             <Button x:Name="stop_simulation_button" Content="Stop Simulation" Click="stop_simulation_button_Click" Visibility="Hidden" Margin="0,5,0,0"/>
         </StackPanel>
 
+        <!-- User input for path choice -->
+        <ComboBox x:Name="CoveragePathComboBox" Grid.Column="1" HorizontalAlignment="Left" Margin="150,484,0,0" VerticalAlignment="Top" 
+          Width="134" Height="23" Visibility="Hidden" SelectionChanged="CoveragePathComboBox_SelectionChanged"/>
+        <Label x:Name="dropbox_path_label" Content="Path type:" HorizontalAlignment="Left" Margin="150,458,0,0" VerticalAlignment="Top" 
+       FontFamily="Arial" FontWeight="Bold" Width="134" Grid.Column="1" Visibility="Hidden"/>
+
         <!-- Error displaying label with a border so that it looks nice -->
         <Border Margin="16,612,16,30" Background="#FFF6F6F6" CornerRadius="10" BorderThickness="1" BorderBrush="Black" Grid.Column="1">
-            <Label x:Name="error_label" Content="Error Displaying Label: " FontFamily="Trebuchet MS" FontSize="9" Padding="5" Width="260" Margin="3,3,3,3"/>
+            <Label x:Name="error_label" Content="Results: " FontFamily="Trebuchet MS" FontSize="16" Padding="5" Width="260" Margin="3,3,3,3"/>
         </Border>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,382,0,0" Grid.Column="1" Width="132" Height="65">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,382,0,0" Grid.Column="1" Width="132" Height="88">
             <TextBlock Text="Animation Parameters:" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Arial" FontWeight="Bold" FontSize="11"/>
             <TextBlock Text="Robot Speed (mm/s):" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Arial" Margin="0, 5, 0, 0" FontSize="10" />
-            <TextBox x:Name="robot_speed_input_mm_s" Width="100" HorizontalAlignment="Left" Margin="0, 5, 0, 0" FontSize="10"/>
+            <TextBox x:Name="robot_speed_input_mm_s" Width="100" HorizontalAlignment="Left" FontSize="10"/>
+            <TextBlock Text="Speed Multiplier:" FontFamily="Arial" FontSize="10" Margin="0, 5, 0, 0" />
+            <TextBox x:Name="speed_multiplier_input" Width="100" HorizontalAlignment="Left" FontSize="10" Margin="0, 5, 0, 0"/>
         </StackPanel>
-        <ComboBox x:Name="CoveragePathComboBox" Grid.Column="1" HorizontalAlignment="Left" Margin="150,476,0,0" VerticalAlignment="Top" 
-                  Width="134" Height="23" Visibility="Hidden" SelectionChanged="CoveragePathComboBox_SelectionChanged"/>
-        <Label x:Name="dropbox_path_label" Content="Path type:" HorizontalAlignment="Left" Margin="150,450,0,0" VerticalAlignment="Top" 
-               FontFamily="Arial" FontWeight="Bold" Width="134" Grid.Column="1" Visibility="Hidden"/>
-
     </Grid>
 </Window>
