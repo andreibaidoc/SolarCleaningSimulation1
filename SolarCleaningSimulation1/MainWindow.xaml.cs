@@ -137,6 +137,17 @@ namespace SolarCleaningSimulation1
                 _panelWidthPx = panelWidthMm * _currentScaleFactor;
                 _panelHeightPx = panelLengthMm * _currentScaleFactor;
 
+                // if there’s already a robot from a previous run, kill it off
+                if (robot != null)
+                {
+                    robot.AnimationStop();                     // stop any running timer/rendering
+                    animation_canvas.Children.Clear();          // remove its Image
+                    solar_panel_canvas.Children.Remove(animation_canvas); // remove old canvas
+                    robot = null;
+                    start_simulation_button.Visibility = Visibility.Hidden;
+                    stop_simulation_button.Visibility = Visibility.Hidden;
+                }
+
                 // Display the robot placement button
                 place_robot_button.Visibility = Visibility.Visible;
             }
@@ -195,6 +206,13 @@ namespace SolarCleaningSimulation1
         {
             if (double.TryParse(robot_speed_input_mm_s.Text, out double robot_speed_mm_s) && double.TryParse(speed_multiplier_input.Text, out double speed_multiplier))
             {
+                // Make results label visible
+                if(results_label_border.Visibility != Visibility.Visible && error_label.Visibility != Visibility.Visible)
+                {
+                    results_label_border.Visibility = Visibility.Visible;
+                    error_label.Visibility = Visibility.Visible;
+                }
+
                 _speedMultiplier = speed_multiplier;
                 robot.AnimationStart(robot_speed_mm_s * speed_multiplier, _currentScaleFactor);
 
