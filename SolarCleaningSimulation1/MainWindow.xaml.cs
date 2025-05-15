@@ -12,6 +12,10 @@ namespace SolarCleaningSimulation1
         {
             InitializeComponent();
             SetDefaultValues();  // Automatically set default values and generate the grid
+
+            // fill with the enum values and pick a default
+            CoveragePathComboBox.ItemsSource = Enum.GetValues(typeof(RobotPath.CoveragePathType));
+            CoveragePathComboBox.SelectedItem = RobotPath.CoveragePathType.ZigZag;
         }
 
         private void SetDefaultValues()
@@ -21,7 +25,8 @@ namespace SolarCleaningSimulation1
             RoofLengthInput.Text = "8";             // Roof Length (m)
             WidthInput.Text = "1100";               // Solar Panel Width (mm)
             LengthInput.Text = "2000";              // Solar Panel Length (mm)
-            robot_speed_input_mm_s.Text = "5000";  // Robot Speed (mm/s)
+            robot_speed_input_mm_s.Text = "1000";   // Default Robot Speed (mm/s) => 1 m/s
+            speed_multiplier_input.Text = "5";      // Default 5x speed for animation
         }
 
         // Variables
@@ -35,10 +40,33 @@ namespace SolarCleaningSimulation1
 
         private int robot_width_mm = 1200, robot_height_mm = 1450; // Robot dimensions in milimiters
 
-        public double panel_inclination = 0;
+        public double panel_inclination = 0; 
+        private double _speedMultiplier;
 
         private Robot robot;
         private Roof roof;
+
+        private void CoveragePathComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (robot == null) return;
+            RegenerateCoveragePath();
+        }
+
+        // shared logic to build & hand off the path
+        private void RegenerateCoveragePath()
+        {
+            var selected = (RobotPath.CoveragePathType)CoveragePathComboBox.SelectedItem;
+            var waypoints = RobotPath.GenerateCoveragePath(
+                selected,
+                panelPaddingPx: panelPaddingMm * _currentScaleFactor,
+                robotBrushPx: robot_width_mm * _currentScaleFactor,
+                numCols: (int)_numCols,
+                numRows: (int)_numRows,
+                panelWidthPx: _panelWidthPx,
+                panelHeightPx: _panelHeightPx
+            );
+            robot.SetCoveragePath(waypoints);
+        }
 
         // Generating the grid based on the width and length of the solar panels that
         // were introduced by the user.
@@ -133,7 +161,7 @@ namespace SolarCleaningSimulation1
                 // since CompositionTarget.Rendering may fire on a background thread
                 Dispatcher.Invoke(() =>
                 {
-                    error_label.Content = $"Animation Ended!\n Elapsed: {elapsed:mm\\:ss}";
+                    error_label.Content = $"Animation Ended!\n Elapsed: {elapsed * _speedMultiplier:mm\\:ss}";
                 });
             };
 
@@ -147,32 +175,45 @@ namespace SolarCleaningSimulation1
                 panelRectsPx: roof.PanelRects);
 
             robot.PlaceOnRoof(_currentScaleFactor);
-            robot.BuildCoveragePathOptimised(panelPaddingPx: panelPaddingMm * _currentScaleFactor, robotWidthPx: robot_width_mm * _currentScaleFactor);
 
+            // Choose the path type
+            CoveragePathComboBox.Visibility = Visibility.Visible;
+            dropbox_path_label.Visibility = Visibility.Visible;
+
+            // get their selection
+            var selectedPattern = (RobotPath.CoveragePathType)CoveragePathComboBox.SelectedItem;
+
+            RegenerateCoveragePath();
+
+            // now safely show & enable Start/Stop
             start_simulation_button.Visibility = Visibility.Visible;
             stop_simulation_button.Visibility = Visibility.Visible;
+
         }
 
         private void start_simulation_button_Click(object sender, RoutedEventArgs e)
         {
-            if (double.TryParse(robot_speed_input_mm_s.Text, out double robot_speed_mm_s))
+            if (double.TryParse(robot_speed_input_mm_s.Text, out double robot_speed_mm_s) && double.TryParse(speed_multiplier_input.Text, out double speed_multiplier))
             {
-                robot.AnimationStart(robot_speed_mm_s, _currentScaleFactor);
+                _speedMultiplier = speed_multiplier;
+                robot.AnimationStart(robot_speed_mm_s * speed_multiplier, _currentScaleFactor);
 
                 // User display
                 error_label.Content = "Animation Started!";
             }
             else
             {
-                MessageBox.Show("Please enter a valid numeric value for robot speed in mm/s.",
+                MessageBox.Show("Please enter a valid numeric value for robot speed in mm/s and/or speed multiplier.",
                                 "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
         private void stop_simulation_button_Click(object sender, RoutedEventArgs e)
         {
+            if (!robot.IsRunning) return;
+
             robot.AnimationStop();
-            var elapsed = robot.ElapsedTime;
+            var elapsed = robot.ElapsedTime * _speedMultiplier;
             error_label.Content = $"Animation Ended!\n Elapsed: " + elapsed.ToString(@"mm\:ss");
         }
     }
