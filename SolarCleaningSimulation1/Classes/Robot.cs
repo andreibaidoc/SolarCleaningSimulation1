@@ -53,8 +53,7 @@ namespace SolarCleaningSimulation1.Classes
 
         public bool IsRunning { get; private set; }
 
-        public Robot(Canvas solarPanelCanvas, Canvas animationCanvas,
-                     int widthMm, int heightMm, string imageUri)
+        public Robot(Canvas solarPanelCanvas, Canvas animationCanvas, int widthMm, int heightMm, string imageUri)
         {
             _solarCanvas = solarPanelCanvas;
             _animCanvas = animationCanvas;
@@ -71,10 +70,7 @@ namespace SolarCleaningSimulation1.Classes
         }
 
         // Configures layout parameters before placing robot: grid offsets, panel sizes, grid counts, padding.
-        public void Configure(double gridOffsetX, double gridOffsetY,
-                              double numCols, double numRows,
-                              double panelWidthPx, double panelHeightPx,
-                              double startPaddingPx, List<Rect> panelRectsPx)
+        public void Configure(double gridOffsetX, double gridOffsetY, double numCols, double numRows, double panelWidthPx, double panelHeightPx, double startPaddingPx, List<Rect> panelRectsPx)
         {
             _gridOffsetX = gridOffsetX;
             _gridOffsetY = gridOffsetY;
