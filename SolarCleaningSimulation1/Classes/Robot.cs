@@ -51,6 +51,8 @@ namespace SolarCleaningSimulation1.Classes
 
         public event EventHandler<TimeSpan> AnimationStopped;
 
+        public bool IsRunning { get; private set; }
+
         public Robot(Canvas solarPanelCanvas, Canvas animationCanvas,
                      int widthMm, int heightMm, string imageUri)
         {
@@ -140,6 +142,7 @@ namespace SolarCleaningSimulation1.Classes
         // Begins animation at the given speed.
         public void AnimationStart(double speedMmPerSec, double scaleFactor, int tickRate = 60)
         {
+            IsRunning = true;
             _speedPxPerSec = speedMmPerSec * scaleFactor;
             _lastRenderTime = DateTime.Now;
             _simStartTime = DateTime.Now;
@@ -151,6 +154,9 @@ namespace SolarCleaningSimulation1.Classes
 
         public void AnimationStop()
         {
+            if (!IsRunning) return; 
+
+            IsRunning = false;
             CompositionTarget.Rendering -= OnRendering;
             _isTurning = false;
             BackToOrigin();

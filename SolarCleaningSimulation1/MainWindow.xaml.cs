@@ -210,6 +210,8 @@ namespace SolarCleaningSimulation1
 
         private void stop_simulation_button_Click(object sender, RoutedEventArgs e)
         {
+            if (!robot.IsRunning) return;
+
             robot.AnimationStop();
             var elapsed = robot.ElapsedTime * _speedMultiplier;
             error_label.Content = $"Animation Ended!\n Elapsed: " + elapsed.ToString(@"mm\:ss");
