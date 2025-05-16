@@ -50,6 +50,7 @@ namespace SolarCleaningSimulation1.Classes
         private TimeSpan _elapsedTime;
         public TimeSpan ElapsedTime => _elapsedTime;
         public event EventHandler<TimeSpan> AnimationStopped;
+
         public bool IsRunning { get; private set; }
 
         public Robot(Canvas solarPanelCanvas, Canvas animationCanvas, int widthMm, int heightMm, string imageUri)
