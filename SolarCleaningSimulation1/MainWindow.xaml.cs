@@ -13,6 +13,8 @@ namespace SolarCleaningSimulation1
             InitializeComponent();
             SetDefaultValues();  // Automatically set default values and generate the grid
 
+            this.SizeChanged += Window_SizeChanged;
+
             // fill with the enum values and pick a default
             CoveragePathComboBox.ItemsSource = Enum.GetValues(typeof(RobotPath.CoveragePathType));
             CoveragePathComboBox.SelectedItem = RobotPath.CoveragePathType.ZigZag;
@@ -25,6 +27,7 @@ namespace SolarCleaningSimulation1
             RoofLengthInput.Text = "8";             // Roof Length (m)
             WidthInput.Text = "1100";               // Solar Panel Width (mm)
             LengthInput.Text = "2000";              // Solar Panel Length (mm)
+            PanelInclinationInput.Text = "25";      // Solar panel/roof inclination in degrees
             robot_speed_input_mm_s.Text = "1000";   // Default Robot Speed (mm/s) => 1 m/s
             speed_multiplier_input.Text = "5";      // Default 5x speed for animation
         }
@@ -37,6 +40,7 @@ namespace SolarCleaningSimulation1
         private double _gridOffsetX, _gridOffsetY; // Offsets for the grid in pixels
         private double _panelWidthPx, _panelHeightPx; // Panel dimensions in pixels
         public const double panelPaddingMm = 2;
+        private bool _gridInitialized = false;
 
         private int robot_width_mm = 1200, robot_height_mm = 1450; // Robot dimensions in milimiters
 
@@ -68,10 +72,40 @@ namespace SolarCleaningSimulation1
             robot.SetCoveragePath(waypoints);
         }
 
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // only regenerate if we’ve already drawn the grid once
+            if (!_gridInitialized) return;
+
+            // force a fresh grid
+            GenerateGrid_Click(generate_grid_button, null);
+        }
+
         // Generating the grid based on the width and length of the solar panels that
         // were introduced by the user.
         private void GenerateGrid_Click(object sender, RoutedEventArgs e)
         {
+            // Clean up old robot
+            if (robot != null)
+            {
+                // stop any animation
+                robot.AnimationStop();
+
+                // remove the animation canvas (and any robot image in it) from the roof canvas
+                if (animation_canvas.Parent is Panel parent)
+                    parent.Children.Remove(animation_canvas);
+
+                // clear out the animation canvas children
+                animation_canvas.Children.Clear();
+
+                // drop the reference so we can make a new robot later
+                robot = null;
+
+                // make buttons invisible so player cannot access them
+                start_simulation_button.Visibility = Visibility.Hidden;
+                stop_simulation_button.Visibility= Visibility.Hidden;
+            }
+
             // Further down, we will change the size of the solar panel canvas
             // this means that now whenever the user clicks, the canvas needs to 
             // return to initial state => this is why we have the following 3 lines
@@ -139,6 +173,7 @@ namespace SolarCleaningSimulation1
 
                 // Display the robot placement button
                 place_robot_button.Visibility = Visibility.Visible;
+                _gridInitialized = true;
             }
             else
             {
@@ -149,9 +184,20 @@ namespace SolarCleaningSimulation1
 
         private void place_robot_button_Click(object sender, RoutedEventArgs e)
         {
+            // if we already have a robot, do nothing
+            if (robot != null)
+                return;
+
             robot = new Robot(solar_panel_canvas, animation_canvas,
                                     widthMm: robot_width_mm, heightMm: robot_height_mm,
                                     imageUri: "pack://application:,,,/Resources/robot-picture-01.png");
+
+            // Configure inclination of panels into robot algorithms
+            if (double.TryParse(PanelInclinationInput.Text, out double inclDeg))
+                robot.PanelInclinationDeg = inclDeg;
+            else robot.PanelInclinationDeg = 0; // default is 0 degrees
+            // DEBUG LOG
+            // System.Diagnostics.Debug.WriteLine($"[DEBUG] PanelInclinationDeg = {robot.PanelInclinationDeg}");
 
             // Subscribe to animation start/stop event
             // When the robot stops, this handler will be invoked with the elapsed TimeSpan
@@ -165,14 +211,8 @@ namespace SolarCleaningSimulation1
                 });
             };
 
-            robot.Configure(gridOffsetX: _gridOffsetX,
-                gridOffsetY: _gridOffsetY,
-                numCols: _numCols,
-                numRows: _numRows,
-                panelWidthPx: _panelWidthPx,
-                panelHeightPx: _panelHeightPx,
-                startPaddingPx: 10,
-                panelRectsPx: roof.PanelRects);
+            robot.Configure(gridOffsetX: _gridOffsetX, gridOffsetY: _gridOffsetY, numCols: _numCols, numRows: _numRows,
+                panelWidthPx: _panelWidthPx, panelHeightPx: _panelHeightPx, startPaddingPx: 10, panelRectsPx: roof.PanelRects);
 
             robot.PlaceOnRoof(_currentScaleFactor);
 

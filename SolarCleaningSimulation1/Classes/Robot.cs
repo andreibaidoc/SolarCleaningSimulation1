@@ -19,6 +19,7 @@ namespace SolarCleaningSimulation1.Classes
         private readonly Image _robotImage;
 
         // Layout parameters
+        public double PanelInclinationDeg { get; set; }
         private double _gridOffsetX;
         private double _gridOffsetY;
         private double _numRows;
@@ -27,10 +28,6 @@ namespace SolarCleaningSimulation1.Classes
         private double _panelHeightPx;
         private double _startPaddingPx;
         private List<Rect> _panelRects;
-
-        // Animation state
-        private DateTime _lastRenderTime;
-        private double _speedPxPerSec;
 
         // Coverage path and waypoints
         private List<Point> _coveragePath = new List<Point>();
@@ -44,17 +41,18 @@ namespace SolarCleaningSimulation1.Classes
         private double _targetAngle = 0;
         private double _currentAngle = 0;
 
+        // Animation state
+        private DateTime _lastRenderTime;
+        private double _speedPxPerSec;
+
+        // Simulation parameters
         private DateTime _simStartTime;
-        
         private TimeSpan _elapsedTime;
         public TimeSpan ElapsedTime => _elapsedTime;
-
         public event EventHandler<TimeSpan> AnimationStopped;
-
         public bool IsRunning { get; private set; }
 
-        public Robot(Canvas solarPanelCanvas, Canvas animationCanvas,
-                     int widthMm, int heightMm, string imageUri)
+        public Robot(Canvas solarPanelCanvas, Canvas animationCanvas, int widthMm, int heightMm, string imageUri)
         {
             _solarCanvas = solarPanelCanvas;
             _animCanvas = animationCanvas;
@@ -71,10 +69,7 @@ namespace SolarCleaningSimulation1.Classes
         }
 
         // Configures layout parameters before placing robot: grid offsets, panel sizes, grid counts, padding.
-        public void Configure(double gridOffsetX, double gridOffsetY,
-                              double numCols, double numRows,
-                              double panelWidthPx, double panelHeightPx,
-                              double startPaddingPx, List<Rect> panelRectsPx)
+        public void Configure(double gridOffsetX, double gridOffsetY, double numCols, double numRows, double panelWidthPx, double panelHeightPx, double startPaddingPx, List<Rect> panelRectsPx)
         {
             _gridOffsetX = gridOffsetX;
             _gridOffsetY = gridOffsetY;
@@ -197,13 +192,13 @@ namespace SolarCleaningSimulation1.Classes
             double dt = (now - _lastRenderTime).TotalSeconds;
             _lastRenderTime = now;
 
-            // Call your modified MoveStep that takes dt
+            // Call modified MoveStep that takes dt
             MoveStep(dt);
         }
 
         private void MoveStep(double dt)
         {
-            // Turning‐in‐place
+            // Turning in place
             if (_isTurning)
             {
                 _turnElapsedSec += dt;
@@ -262,7 +257,7 @@ namespace SolarCleaningSimulation1.Classes
                 }
                 else _targetAngle = _currentAngle;
 
-                // turnDuration = arcLength / speed = (π/2 * r) / (px/sec)
+                // turnDuration = arcLength / speed = (pi/2 * r) / (px/sec)
                 double radiusPx = _panelWidthPx * 0.3;
                 _turnDurationSec = (Math.PI / 2 * radiusPx) / _speedPxPerSec;
                 _turnElapsedSec = 0;
@@ -273,10 +268,22 @@ namespace SolarCleaningSimulation1.Classes
             }
             else
             {
-                // Move by (speed * dt)
-                double move = _speedPxPerSec * dt;
+                // detect if this segment is mostly vertical
+                bool isClimbing = vec.Y > 0 && Math.Abs(vec.Y) > Math.Abs(vec.X);
+
+                // convert to radians
+                double inclineRad = PanelInclinationDeg * Math.PI / 180.0;
+
+                // only slow down on climbs
+                double gradeFactor = isClimbing ? Math.Cos(inclineRad) : 1.0;
+
+                // final movement this tick
+                double move = _speedPxPerSec * dt * gradeFactor;
                 double nx = cx + vec.X * move;
                 double ny = cy + vec.Y * move;
+
+                // Debug for panel inclination
+                // System.Diagnostics.Debug.WriteLine($"[MoveStep] move={move}, gradeFactor={gradeFactor}");
 
                 double newRight = _animCanvas.ActualWidth - (nx + _robotImage.Width / 2);
                 double newBottom = ny - _robotImage.Height / 2;

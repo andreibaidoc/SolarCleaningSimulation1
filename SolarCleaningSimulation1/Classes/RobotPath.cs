@@ -70,34 +70,34 @@ namespace SolarCleaningSimulation1.Classes
         {
             var coveragePath = new List<Point>();
 
-            // 1) compute grid steps
+            // compute grid steps
             double xStep = panelWidthPx + panelPaddingPx;
             double yStep = panelHeightPx + panelPaddingPx;
             double halfBrush = robotBrushPx / 2;
 
-            // 2) inset extremes
+            // inset extremes
             double totalWidth = numCols * panelWidthPx
                                + (numCols - 1) * panelPaddingPx;
             double totalHeight = numRows * panelHeightPx
                                + (numRows - 1) * panelPaddingPx;
 
-            // **inverted**: yTop is at the very top of the first stripe
+            // yTop is at the very top of the first stripe
             double yTop = totalHeight - halfBrush;
             double yBottom = halfBrush;
             double xLeft = halfBrush;
             double xRight = totalWidth - halfBrush;
 
-            // 3) build stripe Y positions **from top down** by exactly brush‐width
+            // build stripe Y positions by exactly brush‐width
             var stripeYs = new List<double>();
             for (double y = yTop; y > yBottom; y -= robotBrushPx)
                 stripeYs.Add(y);
             stripeYs.Add(yBottom);
 
-            // 4) start at top-right
+            // start at top-right
             coveragePath.Add(new Point(xRight, stripeYs[0]));
 
             bool goingLeft = true;
-            // 5) for each stripe: horizontal sweep then drop down one brush-width
+            // for each stripe: horizontal sweep then drop down one brush-width
             for (int i = 0; i < stripeYs.Count; i++)
             {
                 double y = stripeYs[i];
