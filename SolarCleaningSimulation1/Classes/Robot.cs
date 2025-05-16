@@ -193,13 +193,13 @@ namespace SolarCleaningSimulation1.Classes
             double dt = (now - _lastRenderTime).TotalSeconds;
             _lastRenderTime = now;
 
-            // Call your modified MoveStep that takes dt
+            // Call modified MoveStep that takes dt
             MoveStep(dt);
         }
 
         private void MoveStep(double dt)
         {
-            // Turning‐in‐place
+            // Turning in place
             if (_isTurning)
             {
                 _turnElapsedSec += dt;
@@ -258,7 +258,7 @@ namespace SolarCleaningSimulation1.Classes
                 }
                 else _targetAngle = _currentAngle;
 
-                // turnDuration = arcLength / speed = (π/2 * r) / (px/sec)
+                // turnDuration = arcLength / speed = (pi/2 * r) / (px/sec)
                 double radiusPx = _panelWidthPx * 0.3;
                 _turnDurationSec = (Math.PI / 2 * radiusPx) / _speedPxPerSec;
                 _turnElapsedSec = 0;

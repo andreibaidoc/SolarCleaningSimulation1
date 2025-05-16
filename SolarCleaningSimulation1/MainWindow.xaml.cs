@@ -72,6 +72,27 @@ namespace SolarCleaningSimulation1
         // were introduced by the user.
         private void GenerateGrid_Click(object sender, RoutedEventArgs e)
         {
+            // Clean up old robot
+            if (robot != null)
+            {
+                // stop any animation
+                robot.AnimationStop();
+
+                // remove the animation canvas (and any robot image in it) from the roof canvas
+                if (animation_canvas.Parent is Panel parent)
+                    parent.Children.Remove(animation_canvas);
+
+                // clear out the animation canvas children
+                animation_canvas.Children.Clear();
+
+                // drop the reference so we can make a new robot later
+                robot = null;
+
+                // make buttons invisible so player cannot access them
+                start_simulation_button.Visibility = Visibility.Hidden;
+                stop_simulation_button.Visibility= Visibility.Hidden;
+            }
+
             // Further down, we will change the size of the solar panel canvas
             // this means that now whenever the user clicks, the canvas needs to 
             // return to initial state => this is why we have the following 3 lines
@@ -149,6 +170,10 @@ namespace SolarCleaningSimulation1
 
         private void place_robot_button_Click(object sender, RoutedEventArgs e)
         {
+            // if we already have a robot, do nothing
+            if (robot != null)
+                return;
+
             robot = new Robot(solar_panel_canvas, animation_canvas,
                                     widthMm: robot_width_mm, heightMm: robot_height_mm,
                                     imageUri: "pack://application:,,,/Resources/robot-picture-01.png");
