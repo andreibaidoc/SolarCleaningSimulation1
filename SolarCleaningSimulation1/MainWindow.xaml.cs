@@ -192,6 +192,13 @@ namespace SolarCleaningSimulation1
                                     widthMm: robot_width_mm, heightMm: robot_height_mm,
                                     imageUri: "pack://application:,,,/Resources/robot-picture-01.png");
 
+            // Configure inclination of panels into robot algorithms
+            if (double.TryParse(PanelInclinationInput.Text, out double inclDeg))
+                robot.PanelInclinationDeg = inclDeg;
+            else robot.PanelInclinationDeg = 0; // default is 0 degrees
+            // DEBUG LOG
+            // System.Diagnostics.Debug.WriteLine($"[DEBUG] PanelInclinationDeg = {robot.PanelInclinationDeg}");
+
             // Subscribe to animation start/stop event
             // When the robot stops, this handler will be invoked with the elapsed TimeSpan
             robot.AnimationStopped += (s, elapsed) =>
