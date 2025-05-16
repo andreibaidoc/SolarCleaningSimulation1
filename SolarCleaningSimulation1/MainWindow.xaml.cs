@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.IO;
 using SolarCleaningSimulation1.Classes;
 
 namespace SolarCleaningSimulation1
@@ -50,6 +52,10 @@ namespace SolarCleaningSimulation1
         private Robot robot;
         private Roof roof;
 
+        // Data Saving
+        private int _runCount = 0;
+        private bool _runRecorded = false;
+
         private void CoveragePathComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (robot == null) return;
@@ -79,6 +85,13 @@ namespace SolarCleaningSimulation1
 
             // force a fresh grid
             GenerateGrid_Click(generate_grid_button, null);
+        }
+
+        private void saveFilesToCSVButton_Click(object sender, RoutedEventArgs e)
+        {
+            var desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            DataRecorder.SaveAllToCsv(desktop);
+            MessageBox.Show($"All {_runCount} runs saved to:\n{desktop}", "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         // Generating the grid based on the width and length of the solar panels that
@@ -196,25 +209,16 @@ namespace SolarCleaningSimulation1
             if (double.TryParse(PanelInclinationInput.Text, out double inclDeg))
                 robot.PanelInclinationDeg = inclDeg;
             else robot.PanelInclinationDeg = 0; // default is 0 degrees
-            // DEBUG LOG
-            // System.Diagnostics.Debug.WriteLine($"[DEBUG] PanelInclinationDeg = {robot.PanelInclinationDeg}");
-
-            // Subscribe to animation start/stop event
-            // When the robot stops, this handler will be invoked with the elapsed TimeSpan
-            robot.AnimationStopped += (s, elapsed) =>
-            {
-                // Dispatcher.Invoke ensures the UI update runs on the main (UI) thread,
-                // since CompositionTarget.Rendering may fire on a background thread
-                Dispatcher.Invoke(() =>
-                {
-                    error_label.Content = $"Animation Ended!\n Elapsed: {elapsed * _speedMultiplier:mm\\:ss}";
-                });
-            };
 
             robot.Configure(gridOffsetX: _gridOffsetX, gridOffsetY: _gridOffsetY, numCols: _numCols, numRows: _numRows,
                 panelWidthPx: _panelWidthPx, panelHeightPx: _panelHeightPx, startPaddingPx: 10, panelRectsPx: roof.PanelRects);
 
             robot.PlaceOnRoof(_currentScaleFactor);
+
+            // reset our flag and hook the event so we record if the robot
+            // ever stops itself (i.e. reaches the end of the path)
+            _runRecorded = false;
+            robot.AnimationStopped += (s, elapsed) => Dispatcher.Invoke(() => RecordRun(elapsed));
 
             // Choose the path type
             CoveragePathComboBox.Visibility = Visibility.Visible;
@@ -231,15 +235,41 @@ namespace SolarCleaningSimulation1
 
         }
 
+        private void RecordRun(TimeSpan elapsed)
+        {
+            if (_runRecorded) return;       // only once per run
+            _runRecorded = true;
+            _runCount++;
+
+            DataRecorder.AddRun(
+                animationNumber: _runCount,
+                elapsedTime: elapsed * _speedMultiplier,
+                roofLength_m: double.Parse(RoofLengthInput.Text),
+                roofWidth_m: double.Parse(RoofWidthInput.Text),
+                panelWidth_mm: double.Parse(WidthInput.Text),
+                panelLength_mm: double.Parse(LengthInput.Text),
+                panelInclination_deg: double.Parse(PanelInclinationInput.Text),
+                robotSpeed_mmPerSec: double.Parse(robot_speed_input_mm_s.Text),
+                speedMultiplier: double.Parse(speed_multiplier_input.Text),
+                pathType: (RobotPath.CoveragePathType)CoveragePathComboBox.SelectedItem
+            );
+
+            error_label.Content = $" Animation Ended!\n Elapsed: {elapsed * _speedMultiplier:mm\\:ss}" +
+                    $"\n Run #{_runCount} recorded.\n";
+        }
+
         private void start_simulation_button_Click(object sender, RoutedEventArgs e)
         {
             if (double.TryParse(robot_speed_input_mm_s.Text, out double robot_speed_mm_s) && double.TryParse(speed_multiplier_input.Text, out double speed_multiplier))
             {
+                // allow recording again on each new run
+                _runRecorded = false;
+
                 _speedMultiplier = speed_multiplier;
                 robot.AnimationStart(robot_speed_mm_s * speed_multiplier, _currentScaleFactor);
 
                 // User display
-                error_label.Content = "Animation Started!";
+                error_label.Content = " Animation Started!";
             }
             else
             {
@@ -253,8 +283,11 @@ namespace SolarCleaningSimulation1
             if (!robot.IsRunning) return;
 
             robot.AnimationStop();
-            var elapsed = robot.ElapsedTime * _speedMultiplier;
-            error_label.Content = $"Animation Ended!\n Elapsed: " + elapsed.ToString(@"mm\:ss");
+
+            RecordRun(robot.ElapsedTime);
+
+            // var elapsed = robot.ElapsedTime * _speedMultiplier;
+            // error_label.Content = $"Animation Ended!\n Elapsed: " + elapsed.ToString(@"mm\:ss");
         }
     }
 

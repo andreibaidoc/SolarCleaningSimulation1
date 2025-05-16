@@ -62,13 +62,15 @@
 
         <!-- User input for path choice -->
         <ComboBox x:Name="CoveragePathComboBox" Grid.Column="1" HorizontalAlignment="Left" Margin="150,484,0,0" VerticalAlignment="Top" 
-          Width="134" Height="23" Visibility="Hidden" SelectionChanged="CoveragePathComboBox_SelectionChanged"/>
+          Width="134" Height="23" Visibility="Visible" SelectionChanged="CoveragePathComboBox_SelectionChanged"/>
         <Label x:Name="dropbox_path_label" Content="Path type:" HorizontalAlignment="Left" Margin="150,458,0,0" VerticalAlignment="Top" 
-       FontFamily="Arial" FontWeight="Bold" Width="134" Grid.Column="1" Visibility="Hidden"/>
+       FontFamily="Arial" Width="134" Grid.Column="1" Visibility="Visible"/>
+
+        <!-- Button for file saving -->
 
         <!-- Error displaying label with a border so that it looks nice -->
-        <Border Margin="16,612,16,30" Background="#FFF6F6F6" CornerRadius="10" BorderThickness="1" BorderBrush="Black" Grid.Column="1">
-            <Label x:Name="error_label" Content="Results: " FontFamily="Trebuchet MS" FontSize="16" Padding="5" Width="260" Margin="3,3,3,3"/>
+        <Border Margin="16,612,16,0" Background="#FFF6F6F6" CornerRadius="10" BorderThickness="1" BorderBrush="Black" Grid.Column="1" Height="92" VerticalAlignment="Top">
+            <Label x:Name="error_label" Content="Results: " FontFamily="Trebuchet MS" FontSize="16" Padding="5" Width="260" Margin="3,6,3,6"/>
         </Border>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,382,0,0" Grid.Column="1" Width="132" Height="88">
             <TextBlock Text="Animation Parameters:" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="Arial" FontWeight="Bold" FontSize="11"/>
@@ -79,5 +81,6 @@
         </StackPanel>
         <Image Grid.Column="1" Margin="130,229,0,0" Source="/Resources/length_width_panel_input.png" Stretch="Fill" HorizontalAlignment="Left" Width="154" Height="154" VerticalAlignment="Top"/>
         <Image Grid.Column="1" Margin="0,83,7,0" Source="/Resources/length_width_roof_input.png" Stretch="Fill" HorizontalAlignment="Right" Width="152" Height="152" VerticalAlignment="Top"/>
+        <Button x:Name="saveFilesToCSVButton" Grid.Column="1" Content="Save files to .csv file" HorizontalAlignment="Center" Margin="0,719,0,0" Width="266" FontWeight="Bold" BorderBrush="#FFFE6E00" Height="25" VerticalAlignment="Top" Background="White" FontSize="16" Click="saveFilesToCSVButton_Click"/>
     </Grid>
 </Window>
