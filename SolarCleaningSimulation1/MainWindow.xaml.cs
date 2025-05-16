@@ -13,6 +13,8 @@ namespace SolarCleaningSimulation1
             InitializeComponent();
             SetDefaultValues();  // Automatically set default values and generate the grid
 
+            this.SizeChanged += Window_SizeChanged;
+
             // fill with the enum values and pick a default
             CoveragePathComboBox.ItemsSource = Enum.GetValues(typeof(RobotPath.CoveragePathType));
             CoveragePathComboBox.SelectedItem = RobotPath.CoveragePathType.ZigZag;
@@ -38,6 +40,7 @@ namespace SolarCleaningSimulation1
         private double _gridOffsetX, _gridOffsetY; // Offsets for the grid in pixels
         private double _panelWidthPx, _panelHeightPx; // Panel dimensions in pixels
         public const double panelPaddingMm = 2;
+        private bool _gridInitialized = false;
 
         private int robot_width_mm = 1200, robot_height_mm = 1450; // Robot dimensions in milimiters
 
@@ -67,6 +70,15 @@ namespace SolarCleaningSimulation1
                 panelHeightPx: _panelHeightPx
             );
             robot.SetCoveragePath(waypoints);
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // only regenerate if we’ve already drawn the grid once
+            if (!_gridInitialized) return;
+
+            // force a fresh grid
+            GenerateGrid_Click(generate_grid_button, null);
         }
 
         // Generating the grid based on the width and length of the solar panels that
@@ -161,6 +173,7 @@ namespace SolarCleaningSimulation1
 
                 // Display the robot placement button
                 place_robot_button.Visibility = Visibility.Visible;
+                _gridInitialized = true;
             }
             else
             {

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SolarCleaningSimulation1"
         mc:Ignorable="d"
-        Title="Solar Panel Cleaning Simulator" Height="800" Width="1400" Icon="Resources/program_icon.ico">
+        Title="Solar Panel Cleaning Simulator" Height="800" Width="1400" Icon="Resources/program_icon.ico" WindowStartupLocation="CenterScreen" SizeChanged="Window_SizeChanged">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
