@@ -25,6 +25,7 @@ namespace SolarCleaningSimulation1
             RoofLengthInput.Text = "8";             // Roof Length (m)
             WidthInput.Text = "1100";               // Solar Panel Width (mm)
             LengthInput.Text = "2000";              // Solar Panel Length (mm)
+            PanelInclinationInput.Text = "25";      // Solar panel/roof inclination in degrees
             robot_speed_input_mm_s.Text = "1000";   // Default Robot Speed (mm/s) => 1 m/s
             speed_multiplier_input.Text = "5";      // Default 5x speed for animation
         }
@@ -190,14 +191,8 @@ namespace SolarCleaningSimulation1
                 });
             };
 
-            robot.Configure(gridOffsetX: _gridOffsetX,
-                gridOffsetY: _gridOffsetY,
-                numCols: _numCols,
-                numRows: _numRows,
-                panelWidthPx: _panelWidthPx,
-                panelHeightPx: _panelHeightPx,
-                startPaddingPx: 10,
-                panelRectsPx: roof.PanelRects);
+            robot.Configure(gridOffsetX: _gridOffsetX, gridOffsetY: _gridOffsetY, numCols: _numCols, numRows: _numRows,
+                panelWidthPx: _panelWidthPx, panelHeightPx: _panelHeightPx, startPaddingPx: 10, panelRectsPx: roof.PanelRects);
 
             robot.PlaceOnRoof(_currentScaleFactor);
 
