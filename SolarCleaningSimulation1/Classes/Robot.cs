@@ -44,11 +44,13 @@ namespace SolarCleaningSimulation1.Classes
         // Animation state
         private DateTime _lastRenderTime;
         private double _speedPxPerSec;
+        private double _speedMultiplier;
+        private double _simulatedSeconds;
 
         // Simulation parameters
         private DateTime _simStartTime;
         private TimeSpan _elapsedTime;
-        public TimeSpan ElapsedTime => _elapsedTime;
+        public TimeSpan ElapsedTime => TimeSpan.FromSeconds(_simulatedSeconds);
         public event EventHandler<TimeSpan> AnimationStopped;
 
         public bool IsRunning { get; private set; }
@@ -136,11 +138,13 @@ namespace SolarCleaningSimulation1.Classes
 
 
         // Begins animation at the given speed.
-        public void AnimationStart(double speedMmPerSec, double scaleFactor, int tickRate = 60)
+        public void AnimationStart(double speedMmPerSec, double scaleFactor, double speedMultiplier, int tickRate = 60)
         {
             IsRunning = true;
             _speedPxPerSec = speedMmPerSec * scaleFactor;
+            _speedMultiplier = speedMultiplier;
             _lastRenderTime = DateTime.Now;
+            _simulatedSeconds = 0;
             _simStartTime = DateTime.Now;
 
             // Unsubscribe first, then subscribe exactly once
@@ -190,11 +194,15 @@ namespace SolarCleaningSimulation1.Classes
         {
             // Calculate seconds since last frame
             var now = DateTime.Now;
-            double dt = (now - _lastRenderTime).TotalSeconds;
+            double dtReal = (now - _lastRenderTime).TotalSeconds;
             _lastRenderTime = now;
 
-            // Call modified MoveStep that takes dt
-            MoveStep(dt);
+            // compute how much simulated time we advance
+            double dtSim = dtReal * _speedMultiplier;
+            _simulatedSeconds += dtSim;
+
+            // Move the robot
+            MoveStep(dtSim);
         }
 
         private void MoveStep(double dt)

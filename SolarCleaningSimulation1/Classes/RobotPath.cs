@@ -76,10 +76,8 @@ namespace SolarCleaningSimulation1.Classes
             double halfBrush = robotBrushPx / 2;
 
             // inset extremes
-            double totalWidth = numCols * panelWidthPx
-                               + (numCols - 1) * panelPaddingPx;
-            double totalHeight = numRows * panelHeightPx
-                               + (numRows - 1) * panelPaddingPx;
+            double totalWidth = numCols * panelWidthPx + (numCols - 1) * panelPaddingPx;
+            double totalHeight = numRows * panelHeightPx + (numRows - 1) * panelPaddingPx;
 
             // yTop is at the very top of the first stripe
             double yTop = totalHeight - halfBrush;
