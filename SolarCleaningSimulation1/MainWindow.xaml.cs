@@ -266,7 +266,7 @@ namespace SolarCleaningSimulation1
                 _runRecorded = false;
 
                 _speedMultiplier = speed_multiplier;
-                robot.AnimationStart(robot_speed_mm_s * speed_multiplier, _currentScaleFactor);
+                robot.AnimationStart(robot_speed_mm_s, speed_multiplier, _currentScaleFactor);
 
                 // User display
                 error_label.Content = " Animation Started!";
@@ -284,7 +284,7 @@ namespace SolarCleaningSimulation1
 
             robot.AnimationStop();
 
-            RecordRun(robot.ElapsedTime);
+            RecordRun(robot.ElapsedTime * _speedMultiplier);
 
             // var elapsed = robot.ElapsedTime * _speedMultiplier;
             // error_label.Content = $"Animation Ended!\n Elapsed: " + elapsed.ToString(@"mm\:ss");

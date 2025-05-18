@@ -50,8 +50,6 @@
 
         </StackPanel>
 
-        <!-- Helper images for user input -->
-
         <!-- Stack panel with buttons for program control -->
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,484,0,0" Grid.Column="1" Height="111" Width="120">
             <Button x:Name="generate_grid_button" Content="Generate Grid" Click="GenerateGrid_Click" />
@@ -79,6 +77,8 @@
             <TextBlock Text="Speed Multiplier:" FontFamily="Arial" FontSize="10" Margin="0, 5, 0, 0" />
             <TextBox x:Name="speed_multiplier_input" Width="100" HorizontalAlignment="Left" FontSize="10" Margin="0, 5, 0, 0"/>
         </StackPanel>
+
+        <!-- Helper images for user input -->
         <Image Grid.Column="1" Margin="130,229,0,0" Source="/Resources/length_width_panel_input.png" Stretch="Fill" HorizontalAlignment="Left" Width="154" Height="154" VerticalAlignment="Top"/>
         <Image Grid.Column="1" Margin="0,83,7,0" Source="/Resources/length_width_roof_input.png" Stretch="Fill" HorizontalAlignment="Right" Width="152" Height="152" VerticalAlignment="Top"/>
         <Button x:Name="saveFilesToCSVButton" Grid.Column="1" Content="Save files to .csv file" HorizontalAlignment="Center" Margin="0,719,0,0" Width="266" FontWeight="Bold" BorderBrush="#FFFE6E00" Height="25" VerticalAlignment="Top" Background="White" FontSize="16" Click="saveFilesToCSVButton_Click"/>
